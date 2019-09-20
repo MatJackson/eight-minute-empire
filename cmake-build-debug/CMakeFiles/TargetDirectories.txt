@@ -1,0 +1,3 @@
+/Users/tamar/eight-minute-empire/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/tamar/eight-minute-empire/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/tamar/eight-minute-empire/cmake-build-debug/CMakeFiles/eight_minute_empire.dir
