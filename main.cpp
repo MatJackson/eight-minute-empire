@@ -1,12 +1,6 @@
-#include <iostream>
-#include <QApplication>
-#include <QPushButton>
+#include "Maps/MapDriver.h"
 
 int main(int argc, char *argv[]) {
 
-    QApplication EditorApp(argc, argv);
-    QPushButton *button = new QPushButton("&Hi this is my QT application lol");
-    button->show();
-
-    return EditorApp.exec();
+    run();
 }
