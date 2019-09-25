@@ -6,5 +6,5 @@ find_package( Qt5Core REQUIRED )
 find_package( Qt5Widgets REQUIRED )
 find_package( Qt5Gui REQUIRED )
 
-add_executable(eight_minute_empire main.cpp Maps/Map.cpp Maps/Map.h Maps/MapDriver.cpp Maps/MapDriver.h)
+add_executable(eight_minute_empire main.cpp Maps/Map.cpp Maps/Map.h Maps/MapDriver.cpp Maps/MapDriver.h Maps/Country.cpp Maps/Country.h)
 target_link_libraries(eight_minute_empire Qt5::Widgets)

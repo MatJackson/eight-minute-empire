@@ -6,18 +6,12 @@
 
 #include <vector>
 #include <string>
+#include "Country.h"
 
 using namespace std;
 
-struct Country {
-    string name;
-    string continent;
-    string owned_by;
-    int armies;
-    Country(string n, string c) : name(n), continent(c) { }
-};
-
 class Map {
+
 public:
     typedef pair<Country*, Country*> adjacent;
     vector<Country*> countries;
@@ -26,6 +20,8 @@ public:
     Map();
     void addCountry(const string& name, const string& continent);
     void addAdjacency(const string& from, const string& to);
+    bool isConnected();
+    void depthFirstSearch(string v);
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_MAP_H

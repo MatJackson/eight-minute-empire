@@ -5,6 +5,7 @@
 #include "Map.h"
 #include <iostream>
 #include <map>
+#include <list>
 
 using namespace std;
 
@@ -44,4 +45,18 @@ void Map::addAdjacency(const string& from, const string& to)
     pair<Country*, Country*> link = make_pair(f, t);
     adjacencies.push_back(link);
 }
+
+bool Map::isConnected()
+{
+    map<string, bool> visited;
+    int i;
+    for (i = 0; i <= countries.size(); ++i) {
+        visited[countries[i]->name] = false;
+    }
+
+    for (auto & edge : adjacencies) {
+
+    }
+}
+
 
