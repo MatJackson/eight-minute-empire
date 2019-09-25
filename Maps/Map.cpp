@@ -38,6 +38,7 @@ void Map::addAdjacency(const string& from, const string& to)
 
     if (f == nullptr || t == nullptr) {
         cout<<"ERROR";
+        return;
     }
 
     pair<Country*, Country*> link = make_pair(f, t);

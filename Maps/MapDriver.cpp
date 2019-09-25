@@ -18,7 +18,7 @@ int run() {
     vector<Country*>::iterator i;
     for (i = (map.countries).begin(); i !=(map.countries).end(); ++i)
     {
-        cout << (*i)->displayCountry() + " ";
+        cout << (*i)->name + " ";
     }
 
 }

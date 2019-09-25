@@ -6,9 +6,17 @@
 
 #include <vector>
 #include <string>
-#include "Country.h"
 
 using namespace std;
+
+struct Country {
+public:
+    string name;
+    string continent; //should continents be their own class?
+    string owned_by; //change to Player class
+    int armies;
+    Country(string n, string c) : name(n), continent(c) { }
+};
 
 class Map {
 
