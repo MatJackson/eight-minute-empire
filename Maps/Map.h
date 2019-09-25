@@ -34,8 +34,12 @@ public:
 
     Map();
     void addCountry(const string& name, const string& continent);
-    void addAdjacency(const string& from, const string& to);
+    bool addAdjacency(const string& from, const string& to);
+    bool isValid();
     bool isConnected();
+    bool isContinentsConnected();
+    bool isCountryOneContinent();
+
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_MAP_H

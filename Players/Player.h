@@ -5,8 +5,6 @@
 #ifndef EIGHT_MINUTE_EMPIRE_PLAYER_H
 #define EIGHT_MINUTE_EMPIRE_PLAYER_H
 
-using namespace std;
-
 class Player {
 
 public:

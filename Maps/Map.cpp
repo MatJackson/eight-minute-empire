@@ -20,7 +20,7 @@ void Map::addCountry(const string& name, const string& continent)
     countries.push_back(newCountry);
 }
 
-void Map::addAdjacency(const string& from, const string& to)
+bool Map::addAdjacency(const string& from, const string& to)
 {
     Country* f;
     Country* t;
@@ -38,14 +38,31 @@ void Map::addAdjacency(const string& from, const string& to)
 
     if (f == nullptr || t == nullptr) {
         cout<<"ERROR";
-        return;
+        return false;
     }
 
     pair<Country*, Country*> link = make_pair(f, t);
     adjacencies.push_back(link);
+
+    return true;
+}
+
+bool Map::isValid()
+{
+    return  isConnected() && isContinentsConnected() && isCountryOneContinent();
 }
 
 bool Map::isConnected()
+{
+
+}
+
+bool Map::isContinentsConnected()
+{
+
+}
+
+bool Map::isCountryOneContinent()
 {
 
 }

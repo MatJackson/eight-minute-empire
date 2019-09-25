@@ -3,12 +3,11 @@
 //
 
 #include "Map.h"
-#include "MapDriver.h"
 #include <iostream>
 
 using namespace std;
 
-int run() {
+int main() {
     Map map = Map();
     map.addCountry("Canada", "NA");
     map.addCountry("US", "NA");

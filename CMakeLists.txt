@@ -6,5 +6,5 @@ find_package( Qt5Core REQUIRED )
 find_package( Qt5Widgets REQUIRED )
 find_package( Qt5Gui REQUIRED )
 
-add_executable(eight_minute_empire main.cpp Maps/Map.cpp Maps/Map.h Maps/MapDriver.cpp Maps/MapDriver.h Maps/MapLoader.cpp Maps/MapLoader.h Players/Player.cpp Players/Player.h Cards/Cards.cpp Cards/Cards.h Cards/CardsDriver.cpp Cards/CardsDriver.h)
+add_executable(eight_minute_empire Maps/Map.cpp Maps/Map.h Maps/MapDriver.cpp Maps/MapLoader.cpp Maps/MapLoader.h Players/Player.cpp Players/Player.h Cards/Cards.cpp Cards/Cards.h Cards/CardsDriver.cpp Players/PlayerDriver.cpp)
 target_link_libraries(eight_minute_empire Qt5::Widgets)
