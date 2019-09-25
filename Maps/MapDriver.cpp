@@ -15,6 +15,10 @@ int run() {
     map.addCountry("HI", "NA");
     map.addAdjacency("Canada", "US");
 
-    for (std::vector<Country*>::iterator i = map.countries.begin(); i != map.countries.end(); ++i)
-        std::cout << *i << ' ';
+    vector<Country*>::iterator i;
+    for (i = (map.countries).begin(); i !=(map.countries).end(); ++i)
+    {
+        cout << (*i)->displayCountry() + " ";
+    }
+
 }

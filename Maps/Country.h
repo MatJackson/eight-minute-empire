@@ -17,6 +17,7 @@ public:
     string owned_by; //change to Player class
     int armies;
     Country(string n, string c) : name(n), continent(c) { }
+    string displayCountry();
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_COUNTRY_H

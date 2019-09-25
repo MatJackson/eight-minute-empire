@@ -21,7 +21,6 @@ public:
     void addCountry(const string& name, const string& continent);
     void addAdjacency(const string& from, const string& to);
     bool isConnected();
-    void depthFirstSearch(string v);
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_MAP_H
