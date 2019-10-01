@@ -12,29 +12,30 @@ using namespace std;
 
 struct Continent {
 public:
-    string name;
-    Continent(string n) : name(n) { }
+    string *name;
+    Continent(string n) { name=&n; }
 };
 
 struct Country {
 public:
-    string name;
-    Continent continent;
-    Player owned_by;
-    int armies;
-    Country(string n, string c) : name(n), continent(c) { }
+    string *name;
+    Continent *continent;
+    Player *owned_by;
+    int *armies;
+    Country(string n, Continent &c) { name=&n; continent=&c; }
 };
 
 class Map {
 
 public:
     typedef pair<Country*, Country*> adjacent;
-    vector<Country*> countries;
-    vector<adjacent> adjacencies;
+    vector<Country*> *countries;
+    vector<adjacent> *adjacencies;
 
     Map();
-    void addCountry(const string& name, const string& continent);
-    bool addAdjacency(const string& from, const string& to);
+    ~Map();
+    void addCountry(Country &country);
+    bool addAdjacency(Country &from, Country &to);
     bool isValid();
     bool isConnected();
     bool isContinentsConnected();

@@ -9,15 +9,21 @@ using namespace std;
 
 int main() {
     Map map = Map();
-    map.addCountry("Canada", "NA");
-    map.addCountry("US", "NA");
-    map.addCountry("HI", "NA");
-    map.addAdjacency("Canada", "US");
+
+    Continent *north = new Continent("North");
+
+    Country *usa = new Country("usa", *north);
+    Country *can = new Country("can", *north);
+
+    map.addCountry(*usa);
+    map.addCountry(*can);
+
+    map.addAdjacency(*usa, *can);
 
     vector<Country*>::iterator i;
-    for (i = (map.countries).begin(); i !=(map.countries).end(); ++i)
+    for (i = (map.countries)->begin(); i !=(map.countries)->end(); ++i)
     {
-        cout << (*i)->name + " ";
+        cout << *((*i)->name);
     }
 
 }

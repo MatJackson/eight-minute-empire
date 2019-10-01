@@ -3,3 +3,17 @@
 //
 
 #include "MapLoader.h"
+#include <fstream>
+
+using namespace std;
+
+MapLoader::MapLoader()
+{
+
+}
+
+MapLoader::~MapLoader()
+{
+
+}
+

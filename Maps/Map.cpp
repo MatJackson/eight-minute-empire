@@ -3,46 +3,36 @@
 //
 
 #include "Map.h"
-#include <iostream>
-#include <list>
 
 using namespace std;
 
 Map::Map()
 {
-    countries={};
-    adjacencies={};
+    countries = new vector<Country*>();
+    adjacencies = new vector<adjacent>();
 }
 
-void Map::addCountry(const string& name, const string& continent)
+Map::~Map()
 {
-    Country *newCountry = new Country(name, continent);
-    countries.push_back(newCountry);
+
 }
 
-bool Map::addAdjacency(const string& from, const string& to)
+void Map::addCountry(Country &country)
 {
-    Country* f;
-    Country* t;
-    for (auto & elem : countries)
-    {
-        if (elem->name == from)
-        {
-            f = elem;
-        }
-        if (elem->name == to)
-        {
-            t = elem;
-        }
-    }
+    countries->push_back(&country);
+}
 
-    if (f == nullptr || t == nullptr) {
-        cout<<"ERROR";
+bool Map::addAdjacency(Country &from, Country &to)
+{
+    auto fromExists = find(countries->begin(), countries->end(), &from);
+    auto toExists = find(countries->begin(), countries->end(), &to);
+
+    if (fromExists == countries->end() || toExists == countries->end()) { //if either one not found
         return false;
     }
 
-    pair<Country*, Country*> link = make_pair(f, t);
-    adjacencies.push_back(link);
+    pair<Country*, Country*> link = make_pair(&from, &to);
+    adjacencies->push_back(link);
 
     return true;
 }
