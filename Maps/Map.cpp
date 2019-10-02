@@ -12,11 +12,6 @@ Map::Map()
     adjacencies = new vector<adjacent>();
 }
 
-Map::~Map()
-{
-
-}
-
 void Map::addCountry(Country &country)
 {
     countries->push_back(&country);

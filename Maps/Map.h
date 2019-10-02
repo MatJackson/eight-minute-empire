@@ -6,34 +6,35 @@
 
 #include <vector>
 #include <string>
-#include "../Players/Player.h"
 
 using namespace std;
 
 struct Continent {
-public:
     string *name;
-    Continent(string n) { name=&n; }
+    Continent(string n) {
+        name=&n;
+    }
 };
 
 struct Country {
-public:
     string *name;
     Continent *continent;
-    Player *owned_by;
-    int *armies;
-    Country(string n, Continent &c) { name=&n; continent=&c; }
+    int *armies = 0;
+    Country(string n, Continent &c) {
+        name=&n;
+        continent=&c;
+    }
 };
 
 class Map {
 
 public:
     typedef pair<Country*, Country*> adjacent;
+
     vector<Country*> *countries;
     vector<adjacent> *adjacencies;
 
     Map();
-    ~Map();
     void addCountry(Country &country);
     bool addAdjacency(Country &from, Country &to);
     bool isValid();
