@@ -32,8 +32,8 @@ struct Good {
         RUBY,
         WOOD,
         CARROT,
-        IRON,
-        COAL,
+        ANVIL,
+        ORE,
         WILD
     };
 
@@ -63,12 +63,11 @@ public:
 
 class Deck {
 public:
-//    Card *topCard;
+    Card *topCard;
     array<Card, 42> cards;
-//    Deck();
-//    Deck(int deckSize);
-    void generateDeck(bool greaterThanFive);
-//    void shuffle();
+    void generateDeck();
+    Deck();
+    void shuffle();
 //    void draw();
 };
 

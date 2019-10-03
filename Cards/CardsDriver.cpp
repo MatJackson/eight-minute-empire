@@ -10,11 +10,17 @@ using namespace std;
 
 int main() {
 
+    // init deck
     Deck deck = Deck();
+    cout << "breakpoint here" << endl;
+
     // generate the cards
-    deck.generateDeck(true);
+    deck.generateDeck();
+    cout << "breakpoint here" << endl;
 
     // shuffle the deck
+    deck.shuffle();
+    cout << "breakpoint here" << endl;
 
     // draw initial hand
 
