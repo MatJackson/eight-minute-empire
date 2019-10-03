@@ -13,9 +13,9 @@ using namespace std;
 
 struct Action {
     enum ActionType {
-        ACTION_PLACE_NEW_ARMY,
-        ACTION_MOVE_ARMIES_OVER_LAND,
-        ACTION_MOVE_ARMIES_OVER_LAND_OR_WATER,
+        ACTION_ADD_ARMY,
+        ACTION_MOVE_OVER_LAND,
+        ACTION_MOVE_OVER_LAND_OR_WATER,
         ACTION_BUILD_CITY,
         ACTION_DESTROY_ARMY
     };
@@ -23,6 +23,7 @@ struct Action {
     ActionType type;
     int count;
 
+    Action() = default;
     Action(ActionType type, int count);
 };
 
@@ -39,6 +40,7 @@ struct Good {
     GoodType type;
     int count;
 
+    Good() = default;
     Good(GoodType type, int count);
 };
 
@@ -50,21 +52,24 @@ public:
         AND
     };
 
+    Good good;
     CombinationType combinationType;
     vector<Action> actions;
-    Good good;
 
-    Card(CombinationType combinationType, vector<Action> &actions, Good good);
+    Card() = default;
+    Card(Good good, Action action);
+    Card(Good good, CombinationType combinationType, Action primaryAction, Action secondaryAction);
 };
 
 class Deck {
 public:
-    Card *topCard;
+//    Card *topCard;
     array<Card, 42> cards;
-    Deck(int deckSize);
+//    Deck();
+//    Deck(int deckSize);
     void generateDeck(bool greaterThanFive);
-    void shuffle();
-    void draw();
+//    void shuffle();
+//    void draw();
 };
 
 class Hand {
