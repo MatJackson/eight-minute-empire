@@ -29,12 +29,12 @@ struct Action {
 
 struct Good {
     enum GoodType {
-        RUBY,
-        WOOD,
-        CARROT,
-        ANVIL,
-        ORE,
-        WILD
+        GOOD_RUBY,
+        GOOD_WOOD,
+        GOOD_CARROT,
+        GOOD_ANVIL,
+        GOOD_ORE,
+        GOOD_WILD
     };
 
     GoodType type;
@@ -68,7 +68,7 @@ public:
     void generateDeck();
     Deck();
     void shuffle();
-//    void draw();
+    Card draw();
 };
 
 class Hand {

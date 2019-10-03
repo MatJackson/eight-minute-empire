@@ -22,6 +22,13 @@ int main() {
     deck.shuffle();
     cout << "breakpoint here" << endl;
 
+    deck.draw();
+    deck.draw();
+    deck.draw();
+    deck.draw();
+    deck.draw();
+    cout << "breakpoint here" << endl;
+
     // draw initial hand
 
     // perform exchanges
