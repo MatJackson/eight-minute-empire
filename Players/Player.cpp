@@ -8,17 +8,21 @@
 
 using namespace std;
 
-Player::Player(Map &map, int diskNum, int tokenNum, int armyNum) {
-    disks = &diskNum;
-    tokens = &tokenNum;
-    armies = &armyNum;
+Player::Player(Map *map, int diskNum, int tokenNum, int armyNum) {
+    disks = new int(diskNum);
+    tokens = new int(tokenNum);
+    armies = new int(armyNum);
 
-    armiesIn = new vector<army>;
-    for (auto country : *(map.countries)) {
-        armiesIn->push_back(make_pair(country, 0));
+    citiesIn = new vector<countryValue>;
+    for (auto country : (map->getCountries())) {
+        citiesIn->push_back(make_pair(country, 50));
     }
 
-    citiesIn = new vector<Country*>;
+    armiesIn = new vector<countryValue>;
+    for (auto country : (map->getCountries())) {
+        armiesIn->push_back(make_pair(country, 50));
+    }
+
 }
 
 bool Player::PayCoin(int coins)
@@ -33,23 +37,23 @@ bool Player::PayCoin(int coins)
     }
 }
 
-bool Player::PlaceNewArmies(int armiesNum, Country &country)
+bool Player::PlaceNewArmies(int armiesNum, Country *country)
 {
     if(*armies < armiesNum) {
         cout << "Player does not have enough armies to place." << endl;
         return false;
     }
 
-    cout << *armies << endl; //ok
-
     bool cityExists = false;
-    auto it = find(citiesIn->begin(), citiesIn->end(), &country);
-    if (it != citiesIn->end()) {
-        cityExists=true;
+
+    vector<countryValue>::iterator i;
+    for (i = (citiesIn)->begin(); i !=(citiesIn)->end(); ++i) {
+        if (i->first == country) {
+            if (i->second > 0) {
+                cityExists = true;
+            }
+        }
     }
-
-    cout << *armies << endl; //no
-
 
     if(!cityExists) {
         cout << "Player does not have cities in that country. Cannot place armies." << endl;
@@ -57,40 +61,104 @@ bool Player::PlaceNewArmies(int armiesNum, Country &country)
     }
 
     else{
-        *armies-=armiesNum;
-        country.armies+=armiesNum;
-        //add armies in vector
+        *armies -= armiesNum;
+        vector<countryValue>::iterator i;
+        for (i = (armiesIn)->begin(); i !=(armiesIn)->end(); ++i) {
+            if (i->first == country) {
+                i->second+=armiesNum;
+            }
+        }
+        cout << "Placed " << armiesNum << " new armies in " << *(country->name) << endl;
         return true;
     }
 }
 
-bool Player::MoveArmies(int armiesNum, Country &to, Country &from)
+bool Player::MoveArmies(int armiesNum, Country *to, Country *from)
 {
-    if(*armies<armiesNum){
+    vector<countryValue>::iterator i;
+    for (i = (armiesIn)->begin(); i !=(armiesIn)->end(); ++i) {
+        if (i->first == to) {
+            if (i->second < armiesNum) {
+                cout << "Not enough armies to move." << endl;
+                return false; //there are not enough to country to move
+            } else {
+                vector<countryValue>::iterator t;
+                for (t = (armiesIn)->begin(); t != (armiesIn)->end(); ++t) {
+                    if (t->first == to) {
+                        t->second -= armiesNum;
+                    }
+                    if (t->first == from) {
+                        t->second += armiesNum;
+                    }
+                }
+                cout << "Moved " << armiesNum << " armies from " << *(from->name) << " to " << *(to->name) << endl;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Player::BuildCity(Country *country)
+{
+    if(*disks < 1) {
+        cout << "Not enough disks." << endl;
         return false;
     }
 
-    vector<army>::iterator i;
+    vector<countryValue>::iterator i;
     for (i = (armiesIn)->begin(); i !=(armiesIn)->end(); ++i) {
-        if (i->first == &to) {
-            if (i->second < armiesNum)
-                return false; //there are not enough to country to move
-        } else {
-            *armies -= armiesNum;
-            (&to)->armies += armiesNum;
-
-            vector<army>::iterator t;
-            for (t = (armiesIn)->begin(); t != (armiesIn)->end(); ++t) {
-                if (t->first == &to) {
-                    t->second -= armiesNum;
-                }
-                if (t->first == &from) {
-                    t->second += armiesNum;
+        if (i->first == country) {
+            if (i->second > 0) {
+                vector<countryValue>::iterator i;
+                for (i = (citiesIn)->begin(); i !=(citiesIn)->end(); ++i) {
+                    if (i->first == country) {
+                        i->second++;
+                        cout << "Built a new city in " << *(country->name) << endl;
+                        (*disks)--;
+                        return true;
+                    }
                 }
             }
-
-            return true;
+            else {
+                cout << "Cannot build city where player does not have an army." << endl;
+            }
         }
     }
+
+    return false;
+}
+
+void Player::display()
+{
+    cout << "》 Number of disks left: " << *disks << endl;
+    cout << "》 Number of token left: " << *tokens << endl;
+    cout << "》 Number of armies left: " << *armies << endl;
+    cout << "》 Armies in: " << endl;
+    vector<countryValue>::iterator i;
+    for (i = (armiesIn)->begin(); i !=(armiesIn)->end(); ++i) {
+        cout << "》   " << *(i->first->name) << ": " << i->second << endl;
+    }
+    cout << "》 Cities in: " << endl;
+    vector<countryValue>::iterator t;
+    for (t = (citiesIn)->begin(); t !=(citiesIn)->end(); ++t) {
+        cout << "》   " << *(t->first->name) << ": " << t->second << endl;
+    }
+}
+
+int Player::getDisks()
+{
+    return *disks;
+}
+
+int Player::getTokens()
+{
+    return *tokens;
+}
+
+int Player::getArmies()
+{
+    return *armies;
 }
 
