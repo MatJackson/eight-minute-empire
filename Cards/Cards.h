@@ -5,31 +5,82 @@
 #ifndef EIGHT_MINUTE_EMPIRE_CARDS_H
 #define EIGHT_MINUTE_EMPIRE_CARDS_H
 
-#include <vector>
+#include <array>
 #include <string>
+#include <vector>
 
 using namespace std;
 
+struct Action {
+    enum ActionType {
+        ACTION_ADD_ARMY,
+        ACTION_MOVE_OVER_LAND,
+        ACTION_MOVE_OVER_LAND_OR_WATER,
+        ACTION_BUILD_CITY,
+        ACTION_DESTROY_ARMY
+    };
+
+    ActionType type;
+    int count;
+
+    Action() = default;
+    Action(ActionType type, int count);
+};
+
+struct Good {
+    enum GoodType {
+        GOOD_RUBY,
+        GOOD_WOOD,
+        GOOD_CARROT,
+        GOOD_ANVIL,
+        GOOD_ORE,
+        GOOD_WILD
+    };
+
+    GoodType type;
+    int count;
+
+    Good() = default;
+    Good(GoodType type, int count);
+};
+
 class Card {
 public:
-    string good;
-    string action;
-    Card(string g, string a) : good(g), action(a) { }
+    enum CombinationType {
+        SINGLE,
+        OR,
+        AND
+    };
+
+    Good good;
+    CombinationType combinationType;
+    vector<Action> actions;
+
+    Card() = default;
+    Card(Good good, Action action);
+    Card(Good good, CombinationType combinationType, Action primaryAction, Action secondaryAction);
 };
 
 class Deck {
 public:
-    vector<Card*> deck;
-    Deck(int deckSize);
-    void draw();
+    Card *topCard;
+    array<Card, 42> cards;
+    void generateDeck();
+    Deck();
+    void shuffle();
+    Card* draw();
 };
 
 class Hand {
 public:
-    typedef pair<Card*, double> handCard;
-    vector<handCard> hand;
-    Hand();
-    void exchange();
+    Deck *deck;
+    array<Card *, 6> cards;
+    explicit Hand(Deck *deck);
+    Card* exchange(int cardIndex, int coins);
+    int cardCost(int cardIndex);
+private:
+    void shiftCards(int index);
+
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_CARDS_H
