@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <chrono>
 #include <random>
+#include <iostream>
 #include "Cards.h"
 
 Action::Action(Action::ActionType type, int count): type(type), count(count) {
@@ -26,6 +27,59 @@ Card::Card(Good good, CombinationType combinationType, Action primaryAction, Act
 
 Deck::Deck() {
     topCard = &cards[0];
+}
+
+Hand::Hand(Deck *deck): deck(deck) {
+    for (int i = 0; i < 6; i++) {
+        cards[i] = deck->draw();
+    }
+}
+
+void Deck::shuffle() {
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(cards.begin(), cards.end(), default_random_engine(seed));
+}
+
+Card* Deck::draw() {
+    Card *card = topCard;
+    topCard++;
+    return card;
+}
+
+int Hand::cardCost(int cardIndex) {
+    switch (cardIndex) {
+        case 0: return 0;
+        case 1:
+        case 2: return 1;
+        case 3:
+        case 4: return 2;
+        case 5: return 3;
+        default: return 100; // ensures player can't afford card if index is out of bounds
+    }
+}
+
+void Hand::shiftCards(int index) {
+    for (int i = index; i < 5; i++) {
+        cards[i] = cards[i+1];
+    }
+}
+
+Card* Hand::exchange(int cardIndex, int coins) {
+    // check if player can afford exchange
+    if (cardCost(cardIndex) > coins) {
+        return nullptr;
+    }
+
+    // save reference to card
+    Card *card = (cards[cardIndex]);
+
+    // shift cards to new positions
+    shiftCards(cardIndex);
+
+    // draw new card
+    cards[0] = deck->draw();
+
+    return card;
 }
 
 void Deck::generateDeck() {
@@ -258,17 +312,6 @@ void Deck::generateDeck() {
             Action(Action::ActionType::ACTION_ADD_ARMY, 2)
     );
 
-}
-
-void Deck::shuffle() {
-    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(cards.begin(), cards.end(), default_random_engine(seed));
-}
-
-Card Deck::draw() {
-    Card *card = topCard;
-    topCard++;
-    return *card;
 }
 
 

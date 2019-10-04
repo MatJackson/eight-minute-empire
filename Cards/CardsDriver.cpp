@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <array>
 #include "Cards.h"
 
 using namespace std;
@@ -22,18 +21,18 @@ int main() {
     deck.shuffle();
     cout << "breakpoint here" << endl;
 
-    deck.draw();
-    deck.draw();
-    deck.draw();
-    deck.draw();
-    deck.draw();
+    // draw initial hand
+    Hand hand = Hand(&deck);
     cout << "breakpoint here" << endl;
 
-    // draw initial hand
-
     // perform exchanges
-
-    // ?edge cases
+    int index = 0;
+    while(index > -1) {
+        cout << "Enter the index of a card: ";
+        cin >> index;
+        hand.exchange(index, 10);
+        cout << "breakpoint here" << endl;
+    }
 
     return 0;
 }

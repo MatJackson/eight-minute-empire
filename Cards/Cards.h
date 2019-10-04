@@ -68,14 +68,19 @@ public:
     void generateDeck();
     Deck();
     void shuffle();
-    Card draw();
+    Card* draw();
 };
 
 class Hand {
 public:
-    array<Card, 5> cards;
-    Hand();
-    void exchange();
+    Deck *deck;
+    array<Card *, 6> cards;
+    explicit Hand(Deck *deck);
+    Card* exchange(int cardIndex, int coins);
+    int cardCost(int cardIndex);
+private:
+    void shiftCards(int index);
+
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_CARDS_H
