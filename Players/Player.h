@@ -11,22 +11,31 @@ using namespace std;
 
 class Player {
 
-public:
-    typedef pair<Country*, int> army;
-
+private:
+    typedef pair<Country*, int> countryValue;
+    string *name;
     int *disks;
     int *tokens;
     int *armies;
-    vector<Country*> *citiesIn;
-    vector<army> *armiesIn;
+    vector<countryValue> *citiesIn;
+    vector<countryValue> *armiesIn;
 
-    Player(Map &map, int diskNum, int tokenNum, int armyNum);
+public:
+    Player(Map *map, int diskNum, int tokenNum, int armyNum);
     bool PayCoin(int coins);
-    bool PlaceNewArmies(int armiesNum, Country &country);
-    bool MoveArmies(int armiesNum, Country &to, Country &from);
+    bool PlaceNewArmies(int armiesNum, Country *country);
+    bool MoveArmies(int armiesNum, Country *to, Country *from);
     void MoveOverLand();
-    void BuildCity();
-    void DestroyArmy();
+    bool BuildCity(Country *country);
+    bool DestroyArmy(Country *country, Player *player);
+    void display();
+    pair<Country*, int>* getArmiesInCountry(Country *country);
+    pair<Country*, int>* getCitiesInCountry(Country *country);
+    void armyDestroyed(Country* country);
+    int getDisks();
+    int getTokens();
+    int getArmies();
+    void setTokens(int token);
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_PLAYER_H
