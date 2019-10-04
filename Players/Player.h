@@ -27,11 +27,15 @@ public:
     bool MoveArmies(int armiesNum, Country *to, Country *from);
     void MoveOverLand();
     bool BuildCity(Country *country);
-    void DestroyArmy();
+    bool DestroyArmy(Country *country, Player *player);
     void display();
+    pair<Country*, int>* getArmiesInCountry(Country *country);
+    pair<Country*, int>* getCitiesInCountry(Country *country);
+    void armyDestroyed(Country* country);
     int getDisks();
     int getTokens();
     int getArmies();
+    void setTokens(int token);
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_PLAYER_H
