@@ -19,13 +19,14 @@ private:
     int *armies;
     vector<countryValue> *citiesIn;
     vector<countryValue> *armiesIn;
+    Map *map;
 
 public:
-    Player(Map *map, int diskNum, int tokenNum, int armyNum);
+    Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country);
     bool MoveArmies(int armiesNum, Country *to, Country *from);
-    void MoveOverLand();
+    bool MoveOverLand(int armiesNum, Country *to, Country *from);
     bool BuildCity(Country *country);
     bool DestroyArmy(Country *country, Player *player);
     void display();

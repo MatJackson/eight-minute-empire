@@ -29,12 +29,14 @@ class Map {
 private:
     typedef pair<Country*, Country*> adjacent;
     vector<Country*> *countries;
+    vector<Continent*> *continents;
     vector<adjacent> *adjacencies;
 
 public:
     Map();
     void addCountry(Country *country);
     bool addAdjacency(Country *from, Country *to);
+    bool isAdjacent(Country *from, Country *to);
     bool isValid();
     bool isConnected();
     bool isContinentsConnected();

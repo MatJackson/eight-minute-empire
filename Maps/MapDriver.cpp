@@ -11,34 +11,38 @@ using namespace std;
 int main() {
     Map *map = new Map();
 
-    auto *north = new Continent("North");
+    auto *north = new Continent("North America");
+    auto *europe = new Continent("Europe");
 
     auto *usa = new Country("USA", north);
     auto *can = new Country("Canada", north);
+    auto *portugal = new Country("Portugal", europe);
+    auto *spain = new Country("Spain", europe);
+    auto *italy = new Country("Italy", europe);
 
     map->addCountry(usa);
     map->addCountry(can);
+    map->addCountry(portugal);
+    map->addCountry(spain);
+    map->addCountry(italy);
 
     map->addAdjacency(usa, can);
+    map->addAdjacency(can, portugal);
+    map->addAdjacency(spain, portugal);
+    map->addAdjacency(spain, italy);
 
-//    vector<Country*>::iterator i;
-//    for (i = (map->getCountries()).begin(); i !=(map->getCountries()).end(); ++i) {
-//        cout << *((*i)->name) + " " << endl;
-//    }
+    cout << endl << "Here is the map!" << endl << endl;
+    cout << "Countries: " << endl;
+    vector<Country*>::iterator i;
+    for (i = (map->getCountries()).begin(); i !=(map->getCountries()).end(); ++i) {
+        cout << "   " + *(*i)->name << " in continent " << *(*i)->continent->name << endl;
+    }
 
-    Player *player = new Player(map, 12, 13, 40);
-    Player *player2 = new Player(map, 12, 13, 40);
+    cout << endl << "Adjacencies: " << endl;
+    vector<pair<Country*, Country*>>::iterator t;
+    for (t = (map->getAdjacencies()).begin(); t !=(map->getAdjacencies()).end(); ++t) {
+        cout << "   " + *(t)->first->name + " " + *(t)->second->name << endl;
+    }
 
-    player->display();
-    player->DestroyArmy(usa, player2);
-    player2->display();
-    player->BuildCity(usa);
-    player->display();
-
-    player->PlaceNewArmies(5, usa);
-    player->display();
-
-    player->MoveArmies(1, usa, can);
-    player->display();
 
 }

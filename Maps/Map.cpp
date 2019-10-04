@@ -11,11 +11,19 @@ Map::Map()
 {
     countries = new vector<Country*>();
     adjacencies = new vector<adjacent>();
+    continents = new vector<Continent*>();
 }
 
 void Map::addCountry(Country *country)
 {
     countries->push_back(country);
+    vector<Continent*>::iterator i;
+    for (i = (continents)->begin(); i !=(continents)->end(); ++i) {
+        if (*i == country->continent) {
+            return;
+        }
+    }
+    continents->push_back(country->continent);
 }
 
 bool Map::addAdjacency(Country *from, Country *to)
@@ -31,6 +39,18 @@ bool Map::addAdjacency(Country *from, Country *to)
     adjacencies->push_back(link);
 
     return true;
+}
+
+bool Map::isAdjacent(Country *from, Country *to)
+{
+    vector<pair<Country*, Country*>>::iterator i;
+    for (i = (adjacencies)->begin(); i !=(adjacencies)->end(); ++i) {
+        if ((i->first == to && i->second == from) || i->first == from && i->second == to) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool Map::isValid()
