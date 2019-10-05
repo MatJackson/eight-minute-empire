@@ -8,13 +8,6 @@
 
 using namespace std;
 
-Player::Player() {
-    disks = new int();
-    tokens = new int();
-    armies = new int();
-    name = new string();
-    map = new Map();
-}
 
 Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyNum) {
     disks = new int(diskNum);
