@@ -72,6 +72,11 @@ Map* MapLoader::initialize(string fileName)
         cout << "Invalid map" << endl;
         return nullptr;
     }
-    return map;
+    if (map->isValid()) {
+        return map;
+    } else {
+        return nullptr;
+    }
+
 }
 

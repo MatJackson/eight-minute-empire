@@ -85,17 +85,17 @@ bool Map::isValid()
 
 bool Map::isConnected()
 {
-
+    return true;
 }
 
 bool Map::isContinentsConnected()
 {
-
+    return true;
 }
 
 bool Map::isCountryOneContinent()
 {
-
+    return true;
 }
 
 vector<Country*> Map::getCountries()
