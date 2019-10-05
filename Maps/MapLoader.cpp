@@ -69,6 +69,7 @@ Map* MapLoader::initialize(string fileName)
             }
         }
     if(adjacencies==false){
+        cout << "Invalid map" << endl;
         return nullptr;
     }
     return map;

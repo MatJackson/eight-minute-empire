@@ -5,10 +5,15 @@
 using namespace std;
 
 int main() {
-    MapLoader *loader = new MapLoader("../Resources/world.map");
-    if(loader->map== nullptr) {
-        cout << "Invalid map";
-    } else {
-        loader->map->display();
-    }
+
+    MapLoader *loader;
+
+    do {
+        cout << "Enter map file name: ";
+        string fileName;
+        cin >> fileName;
+        loader = new MapLoader("../Resources/" + fileName);
+    } while (loader->map== nullptr);
+
+    loader->map->display();
 }
