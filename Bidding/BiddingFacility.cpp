@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <limits>
+#include <random>
+#include <chrono>
 #include "BiddingFacility.h"
 
 BiddingFacility::BiddingFacility(int *availableCoin, int *playerAge): availableCoin(availableCoin), playerAge(playerAge) {
@@ -41,17 +43,18 @@ bool BiddingFacility::largerBidThan(BiddingFacility *biddingFacility) {
     }
 
     // in the case of a tie
-    if (this->amountBid ==biddingFacility->getAmountBid()) {
+    if (*amountBid == *biddingFacility->getAmountBid()) {
 
         // and the ages are the same
-        if (this->playerAge == biddingFacility->getPlayerAge()) {
-            return rand()%2;
+        if (*playerAge == *biddingFacility->getPlayerAge()) {
+            srand ( time(NULL) );
+            return rand() % 2 == 1;
         } else {
-            return (this->playerAge > biddingFacility->getPlayerAge());
+            return (*playerAge < *biddingFacility->getPlayerAge());
         }
     }
 
-    return this->amountBid > biddingFacility->getAmountBid();
+    return *amountBid > *biddingFacility->getAmountBid();
 }
 
 void BiddingFacility::payBid() {
