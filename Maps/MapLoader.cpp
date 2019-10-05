@@ -69,7 +69,7 @@ Map* MapLoader::initialize(string fileName)
             }
         }
     if(adjacencies==false){
-        cout << "Invalid map" << endl;
+        cout << "Invalid map. Map must be connected & each country should belong to only one continent!" << endl;
         return nullptr;
     }
     if (map->isValid()) {
