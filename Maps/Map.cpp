@@ -3,6 +3,7 @@
 //
 
 #include "Map.h"
+#include <iostream>
 
 using namespace std;
 typedef pair<Country*, Country*> adjacent;
@@ -19,7 +20,7 @@ void Map::addCountry(Country *country)
     countries->push_back(country);
     vector<Continent*>::iterator i;
     for (i = (continents)->begin(); i !=(continents)->end(); ++i) {
-        if (*i == country->continent) {
+        if (*(*i)->name == *(country->continent->name)) {
             return;
         }
     }
@@ -53,6 +54,30 @@ bool Map::isAdjacent(Country *from, Country *to)
     return false;
 }
 
+Country* Map::findCountry(string country) {
+    vector<Country*>::iterator i;
+    for (i = (countries)->begin(); i !=(countries)->end(); ++i) {
+        if (*(*i)->name == country) {
+            return &(*(*i));
+        }
+    }
+}
+
+void Map::display() {
+    cout << endl << "Here is the map!" << endl << endl;
+    cout << "Countries: " << endl;
+    vector<Country*>::iterator i;
+    for (i = countries->begin(); i !=countries->end(); ++i) {
+        cout << "   " + *(*i)->name << " in continent " << *(*i)->continent->name << endl;
+    }
+
+    cout << endl << "Adjacencies: " << endl;
+    vector<pair<Country*, Country*>>::iterator t;
+    for (t = adjacencies->begin(); t !=adjacencies->end(); ++t) {
+        cout << "   " + *(t)->first->name + " " + *(t)->second->name << endl;
+    }
+}
+
 bool Map::isValid()
 {
     return  isConnected() && isContinentsConnected() && isCountryOneContinent();
@@ -60,17 +85,17 @@ bool Map::isValid()
 
 bool Map::isConnected()
 {
-
+    return true;
 }
 
 bool Map::isContinentsConnected()
 {
-
+    return true;
 }
 
 bool Map::isCountryOneContinent()
 {
-
+    return true;
 }
 
 vector<Country*> Map::getCountries()

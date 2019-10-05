@@ -31,18 +31,5 @@ int main() {
     map->addAdjacency(spain, portugal);
     map->addAdjacency(spain, italy);
 
-    cout << endl << "Here is the map!" << endl << endl;
-    cout << "Countries: " << endl;
-    vector<Country*>::iterator i;
-    for (i = (map->getCountries()).begin(); i !=(map->getCountries()).end(); ++i) {
-        cout << "   " + *(*i)->name << " in continent " << *(*i)->continent->name << endl;
-    }
-
-    cout << endl << "Adjacencies: " << endl;
-    vector<pair<Country*, Country*>>::iterator t;
-    for (t = (map->getAdjacencies()).begin(); t !=(map->getAdjacencies()).end(); ++t) {
-        cout << "   " + *(t)->first->name + " " + *(t)->second->name << endl;
-    }
-
 
 }

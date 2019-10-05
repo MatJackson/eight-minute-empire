@@ -37,6 +37,8 @@ public:
     void addCountry(Country *country);
     bool addAdjacency(Country *from, Country *to);
     bool isAdjacent(Country *from, Country *to);
+    Country* findCountry(string country);
+    void display();
     bool isValid();
     bool isConnected();
     bool isContinentsConnected();

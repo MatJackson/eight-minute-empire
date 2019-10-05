@@ -5,16 +5,15 @@
 #ifndef EIGHT_MINUTE_EMPIRE_MAPLOADER_H
 #define EIGHT_MINUTE_EMPIRE_MAPLOADER_H
 
+#include "Map.h"
+
 using namespace std;
 
-class MapLoader
-{
+class MapLoader {
 public:
-    MapLoader();
-    ~MapLoader();
-
-private:
-
+    Map *map;
+    MapLoader(string fileName);
+    Map* initialize(string fileName);
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_MAPLOADER_H
