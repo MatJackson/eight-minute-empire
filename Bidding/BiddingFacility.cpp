@@ -26,6 +26,10 @@ void BiddingFacility::bid() {
             break;
         }
     }
+
+    for (int i = 0; i < 60; i++) {
+        cout << endl;
+    }
 }
 
 int* BiddingFacility::getAmountBid() {

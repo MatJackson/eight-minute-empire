@@ -25,10 +25,11 @@ int main() {
     BiddingFacility biddingFacility3 = BiddingFacility(player3Tokens, player3Age);
     bidders.push_back(biddingFacility3);
 
-    printf("|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player1", 0, *player1Tokens, *player1Age);
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player2", 0, *player2Tokens, *player2Age);
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player3", 0, *player3Tokens, *player3Age);
+    cout << "Initial State:" << endl;
+    printf("\t|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player1", 0, *player1Tokens, *player1Age);
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player2", 0, *player2Tokens, *player2Age);
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player3", 0, *player3Tokens, *player3Age);
     cout << endl;
 
     // perform bids
@@ -39,10 +40,10 @@ int main() {
     }
 
     cout << "State After Bid:" << endl;
-    printf("|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player1", *biddingFacility1.getAmountBid(), *player1Tokens, *player1Age);
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player2", *biddingFacility2.getAmountBid(), *player2Tokens, *player2Age);
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player3", *biddingFacility3.getAmountBid(), *player3Tokens, *player3Age);
+    printf("\t|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player1", *biddingFacility1.getAmountBid(), *player1Tokens, *player1Age);
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player2", *biddingFacility2.getAmountBid(), *player2Tokens, *player2Age);
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player3", *biddingFacility3.getAmountBid(), *player3Tokens, *player3Age);
     cout << endl;
 
     // get winner
@@ -57,14 +58,14 @@ int main() {
 
     // pay the man
     winningBidder->payBid();
-    cout << "Winner is: " << winner << endl;
     cout << "State After Paying Bid:" << endl;
-    printf("|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player1", *biddingFacility1.getAmountBid(), *player1Tokens, *player1Age);
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player2", *biddingFacility2.getAmountBid(), *player2Tokens, *player2Age);
-    printf("|%-10s|%5d|%5d|%5d|\n", "Player3", *biddingFacility3.getAmountBid(), *player3Tokens, *player3Age);
+    printf("\t|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player1", *biddingFacility1.getAmountBid(), *player1Tokens, *player1Age);
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player2", *biddingFacility2.getAmountBid(), *player2Tokens, *player2Age);
+    printf("\t|%-10s|%5d|%5d|%5d|\n", "Player3", *biddingFacility3.getAmountBid(), *player3Tokens, *player3Age);
     cout << endl;
 
+    cout << "Winner is: " << winner << endl;
     cout << "fin" << endl;
     cout << "press any key to exit";
 
