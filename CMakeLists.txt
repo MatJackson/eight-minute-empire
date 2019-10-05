@@ -10,11 +10,15 @@ add_executable(
 #        Maps/MapDriver.cpp
         Maps/MapLoader.h
         Maps/MapLoader.cpp
+#        Maps/MapLoaderDriver.cpp
         Players/Player.h
         Players/Player.cpp
 #        Players/PlayerDriver.cpp
         Cards/Cards.h
         Cards/Cards.cpp
 #        Cards/CardsDriver.cpp
-        Maps/MapLoaderDriver.cpp)
+        Bidding/BiddingFacility.h
+        Bidding/BiddingFacility.cpp
+        Bidding/BiddingFacilityDriver.cpp
+)
 

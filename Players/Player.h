@@ -22,6 +22,7 @@ private:
     Map *map;
 
 public:
+    Player();
     Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country);
