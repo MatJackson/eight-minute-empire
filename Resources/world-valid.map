@@ -3,7 +3,6 @@ China,Asia
 India,Asia
 United States,North America
 Indonesia,Asia
-Pakistan,Asia
 Peru,South America
 Brazil,South America
 Nigeria,Africa
@@ -22,7 +21,7 @@ Italy,Europe
 [Adjacencies]
 China,Japan
 India,Indonesia
-Pakistan,India
+Bangladesh,India
 China,Bangladesh
 China,Russia
 Russia,Egypt

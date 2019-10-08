@@ -45,9 +45,9 @@ bool Map::addAdjacency(Country *from, Country *to)
             i->second.push_back(to);
         }
     }
-    cout << "Added adjacency between " << *(to->name) << " and " << *(from->name)<< " to the map." << endl;
 
-    return false;
+    cout << "Added adjacency between " << *(to->name) << " and " << *(from->name)<< " to the map." << endl;
+    return true;
 }
 
 bool Map::isAdjacent(Country *from, Country *to)
@@ -110,11 +110,16 @@ bool Map::isConnected()
         visited->push_back(make_pair(country.first, false));
     }
 
-    vector<pair<Country*, bool>>::iterator i;
-    for (i = visited->begin(); i !=visited->end(); ++i) {
-        if (!i->second)
+    search((visited->begin())->first, visited);
+
+    vector<pair<Country*, bool>>::iterator w;
+    for (w = visited->begin(); w !=visited->end(); ++w) {
+
+        if (!w->second)
         {
-            search(i->first, visited);
+            cout << *(w->first->name) << " is not connected to any other region." << endl;
+            cout << "Map is NOT CONNECTED. Invalid." << endl;
+            return false;
         }
     }
 
@@ -124,6 +129,7 @@ bool Map::isConnected()
 
 void Map::search(Country* countrySearch, vector<pair<Country*, bool>> *visited)
 {
+    cout << "Checking adjacency for country " << *(countrySearch->name) << "... " << endl;
 
     vector<pair<Country*, bool>>::iterator i;
     for (i = visited->begin(); i !=visited->end(); ++i) {
@@ -136,19 +142,22 @@ void Map::search(Country* countrySearch, vector<pair<Country*, bool>> *visited)
     vector<country>::iterator t;
     for (t = (countries)->begin(); t !=(countries)->end(); ++t) {
         if (t->first == countrySearch) {
+
             vector<Country*>::iterator w;
             for (w = (t->second).begin(); w !=(t->second).end(); ++w) {
+
                 vector<pair<Country*, bool>>::iterator q;
                 for (q = visited->begin(); q !=visited->end(); ++q) {
-                    if ((q->first) == *w)
+                    if ((q->first) == *w && (!q->second))
                     {
                         search(*w, visited);
                     }
                 }
 
-                }
             }
+
         }
+    }
 
 }
 

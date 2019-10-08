@@ -1,0 +1,41 @@
+[Countries]
+China,Asia
+India,Asia
+United States,North America
+Indonesia,Asia
+Pakistan, Asia
+Peru,South America
+Brazil,South America
+Nigeria,Africa
+Bangladesh,Asia
+Russia,Asia
+Mexico,North America
+Japan,Asia
+Ethiopia,Africa
+Egypt,Africa
+Canada,North America
+France,Europe
+Portugal,Europe
+Spain,Europe
+Italy,Europe
+
+[Adjacencies]
+China,Japan
+India,Indonesia
+Bangladesh,India
+China,Russia
+Russia,Egypt
+Egypt,Ethiopia
+Egypt,Nigeria
+Russia,France
+France,Portugal
+Portugal,Spain
+Spain,Italy
+Italy,Russia
+Portugal,Canada
+Canada,United States
+United States,Brazil
+Brazil,Peru
+Peru,Mexico
+Brazil,Mexico
+United States,Mexico

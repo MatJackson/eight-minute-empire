@@ -56,27 +56,28 @@ Map* MapLoader::initialize(string fileName)
                     Country *country = new Country(first, continent);
                     map->addCountry(country);
                 } catch (const exception& e) {
-                    cout << "Invalid country format" << endl;
+                    cout << endl << "Invalid country format" << endl;
                 }
             }
             if (adjacencies) {
                 try {
                     bool found = map->addAdjacency(map->findCountry(first), map->findCountry(second));
                     if(!found) {
-                        cout << "Country listed in Adjacency list not found." << endl;
+                        cout << endl <<  "Country listed in Adjacency list not found." << endl;
                         return nullptr;
                     }
                 } catch (const exception& e) {
-                    cout << "Invalid adjacency format" << endl;
+                    cout << endl << "Invalid adjacency format" << endl;
                 }
             }
             }
         }
-    if(adjacencies==false){
-        cout << "Invalid map. Map must be connected & each country should belong to only one continent!" << endl;
+    if(!adjacencies){
+        cout << endl << "Invalid map. Map must be connected & each country should belong to only one continent!" << endl;
         return nullptr;
     }
     if (map->isValid()) {
+        map->display();
         return map;
     } else {
         return nullptr;

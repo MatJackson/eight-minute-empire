@@ -14,6 +14,4 @@ int main() {
         cin >> fileName;
         loader = new MapLoader("../Resources/" + fileName);
     } while (loader->map== nullptr);
-
-    loader->map->display();
 }

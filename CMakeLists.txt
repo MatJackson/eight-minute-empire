@@ -7,7 +7,7 @@ add_executable(
         eight_minute_empire
         Maps/Map.h
         Maps/Map.cpp
-        Maps/MapDriver.cpp
+#        Maps/MapDriver.cpp
         Maps/MapLoader.h
         Maps/MapLoader.cpp
         Players/Player.h
@@ -16,6 +16,6 @@ add_executable(
         Cards/Cards.h
         Cards/Cards.cpp
 #        Cards/CardsDriver.cpp
-#        Maps/MapLoaderDriver.cpp
+        Maps/MapLoaderDriver.cpp
 )
 

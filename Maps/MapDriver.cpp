@@ -30,13 +30,17 @@ int main() {
     map->display();
 
     map->addAdjacency(usa, can);
-    map->addAdjacency(can, portugal);
     map->addAdjacency(spain, portugal);
     map->addAdjacency(spain, italy);
 
-    // display with countries and adjacencies
+    // display with countries and adjacencies - NOT CONNECTED
     map->display();
-
     map->isValid();
+
+    //add adjacency that will make it connected and display.
+    map->addAdjacency(can, portugal);
+    map->display();
+    map->isValid();
+
 
 }
