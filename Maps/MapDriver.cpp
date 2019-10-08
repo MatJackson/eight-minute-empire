@@ -26,10 +26,16 @@ int main() {
     map->addCountry(spain);
     map->addCountry(italy);
 
+    // display with only countries
+    map->display();
+
     map->addAdjacency(usa, can);
     map->addAdjacency(can, portugal);
     map->addAdjacency(spain, portugal);
     map->addAdjacency(spain, italy);
 
+    // display with countries and adjacencies
+    map->display();
+    map->isValid();
 
 }
