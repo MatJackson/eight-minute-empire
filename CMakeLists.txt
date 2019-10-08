@@ -6,14 +6,15 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(
         eight_minute_empire
         Maps/Map.h
-        Maps/MapDriver.cpp
+        Maps/Map.cpp
+        #        Maps/MapDriver.cpp
         Maps/MapLoader.h
         Maps/MapLoader.cpp
         Players/Player.h
         Players/Player.cpp
-#        Players/PlayerDriver.cpp
+        #        Players/PlayerDriver.cpp
         Cards/Cards.h
         Cards/Cards.cpp
-#        Cards/CardsDriver.cpp
-#        Maps/MapLoaderDriver.cpp
+        #        Cards/CardsDriver.cpp
+        Maps/MapLoaderDriver.cpp
 )

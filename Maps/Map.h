@@ -28,8 +28,9 @@ struct Country {
 class Map {
 public:
     typedef pair<Country*, vector<Country*>> country;
+    typedef pair<Continent*, vector<Country*>> continent;
     vector<country> *countries;
-    vector<Continent*> *continents;
+    vector<continent> *continents;
 
     Map();
     void addCountry(Country *country);
@@ -40,8 +41,7 @@ public:
     bool isValid();
     bool isConnected();
     bool isContinentsConnected();
-    bool isCountryOneContinent();
-    void search(Country* country, vector<pair<Country*, bool>> *visited);
+    void search(Country* country, vector<pair<Country*, bool>> *visited, bool byContinent);
 
 };
 

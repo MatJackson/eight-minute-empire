@@ -93,9 +93,9 @@ void Map::display() {
         vector<Country*>::iterator t;
         for (t = (i->second).begin(); t !=(i->second).end(); ++t) {
             cout << "         " << *((*t)->name) << endl;
-            }
-        cout << endl;
         }
+        cout << endl;
+    }
     cout << endl << "-------------------------------------------------" << endl;
     cout << endl;
     cout << "Continents: " << endl;
@@ -209,4 +209,3 @@ bool Map::isContinentsConnected()
     cout << "Continents are connected." << endl;
     return true;
 }
-
