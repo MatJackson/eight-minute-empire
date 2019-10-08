@@ -8,6 +8,7 @@
 
 using namespace std;
 
+
 Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyNum) {
     disks = new int(diskNum);
     tokens = new int(tokenNum);
@@ -212,6 +213,6 @@ int Player::getArmies() {
 }
 
 void Player::setTokens(int token) {
-    *tokens+=token;
+    *tokens = token;
 }
 

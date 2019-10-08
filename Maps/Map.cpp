@@ -2,6 +2,7 @@
 // Created by Tamar M on 2019-09-20.
 //
 
+#include <algorithm>
 #include "Map.h"
 #include <iostream>
 #include <list>
