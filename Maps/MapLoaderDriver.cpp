@@ -8,10 +8,10 @@ int main() {
 
     MapLoader *loader;
 
-    do {
+   // do {
         cout << "Enter map file name: ";
         string fileName;
-        cin >> fileName;
-        loader = new MapLoader("../Resources/" + fileName);
-    } while (loader->map== nullptr);
+        //cin >> fileName;
+        loader = new MapLoader("../Resources/world-valid.map");
+    //} while (loader->map== nullptr);
 }

@@ -30,7 +30,7 @@ Map* MapLoader::initialize(string fileName)
     bool adjacencies = false;
     while (getline(infile, line))
     {
-        if(line=="") {
+        if(line.find_first_not_of(' ') == string::npos) {
             continue;
         }
         if(line=="[Countries]") {
@@ -80,6 +80,7 @@ Map* MapLoader::initialize(string fileName)
         map->display();
         return map;
     } else {
+        map->display();
         return nullptr;
     }
 

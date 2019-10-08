@@ -1,18 +1,22 @@
 [Countries]
 China,Asia
 India,Asia
-United States,North America
 Indonesia,Asia
-Peru,South America
-Brazil,South America
-Nigeria,Africa
 Bangladesh,Asia
 Russia,Asia
-Mexico,North America
 Japan,Asia
+
+United States,North America
+Mexico,North America
+Canada,North America
+
+Peru,South America
+Brazil,South America
+
+Nigeria,Africa
 Ethiopia,Africa
 Egypt,Africa
-Canada,North America
+
 France,Europe
 Portugal,Europe
 Spain,Europe
