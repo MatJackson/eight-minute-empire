@@ -26,23 +26,17 @@ int main() {
     map->addCountry(spain);
     map->addCountry(italy);
 
+    // display with only countries
+    map->display();
+
     map->addAdjacency(usa, can);
     map->addAdjacency(can, portugal);
     map->addAdjacency(spain, portugal);
     map->addAdjacency(spain, italy);
 
-    cout << endl << "Here is the map!" << endl << endl;
-    cout << "Countries: " << endl;
-    vector<Country*>::iterator i;
-    for (i = (map->getCountries()).begin(); i !=(map->getCountries()).end(); ++i) {
-        cout << "   " + *(*i)->name << " in continent " << *(*i)->continent->name << endl;
-    }
+    // display with countries and adjacencies
+    map->display();
 
-    cout << endl << "Adjacencies: " << endl;
-    vector<pair<Country*, Country*>>::iterator t;
-    for (t = (map->getAdjacencies()).begin(); t !=(map->getAdjacencies()).end(); ++t) {
-        cout << "   " + *(t)->first->name + " " + *(t)->second->name << endl;
-    }
-
+    map->isValid();
 
 }
