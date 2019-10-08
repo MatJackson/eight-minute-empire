@@ -16,13 +16,13 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
     name = new string(playerName);
 
     citiesIn = new vector<countryValue>;
-    for (auto country : (map->getCountries())) {
-        citiesIn->push_back(make_pair(country, 0));
+    for (auto country : *(map->countries)) {
+        citiesIn->push_back(make_pair(country.first, 0));
     }
 
     armiesIn = new vector<countryValue>;
-    for (auto country : (map->getCountries())) {
-        armiesIn->push_back(make_pair(country, 1));
+    for (auto country : *(map->countries)) {
+        armiesIn->push_back(make_pair(country.first, 1));
     }
 
     this->map = map;

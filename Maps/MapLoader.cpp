@@ -61,7 +61,11 @@ Map* MapLoader::initialize(string fileName)
             }
             if (adjacencies) {
                 try {
-                    map->addAdjacency(map->findCountry(first), map->findCountry(second));
+                    bool found = map->addAdjacency(map->findCountry(first), map->findCountry(second));
+                    if(!found) {
+                        cout << "Country listed in Adjacency list not found." << endl;
+                        return nullptr;
+                    }
                 } catch (const exception& e) {
                     cout << "Invalid adjacency format" << endl;
                 }
