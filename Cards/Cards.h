@@ -12,6 +12,8 @@
 using namespace std;
 
 struct Action {
+    static const char * const actions[];
+
     enum ActionType {
         ACTION_ADD_ARMY,
         ACTION_MOVE_OVER_LAND,
@@ -25,9 +27,12 @@ struct Action {
 
     Action() = default;
     Action(ActionType type, int count);
+    string getName();
 };
 
 struct Good {
+    static const char * const goods[];
+
     enum GoodType {
         GOOD_RUBY,
         GOOD_WOOD,
@@ -42,6 +47,7 @@ struct Good {
 
     Good() = default;
     Good(GoodType type, int count);
+    string getName();
 };
 
 class Card {
@@ -59,6 +65,8 @@ public:
     Card() = default;
     Card(Good good, Action action);
     Card(Good good, CombinationType combinationType, Action primaryAction, Action secondaryAction);
+    string getCombinationType();
+    void printCard();
 };
 
 class Deck {
@@ -69,6 +77,7 @@ public:
     Deck();
     void shuffle();
     Card* draw();
+    void printDeck();
 };
 
 class Hand {
@@ -78,6 +87,7 @@ public:
     explicit Hand(Deck *deck);
     Card* exchange(int cardIndex, int coins);
     int cardCost(int cardIndex);
+    void printHand();
 private:
     void shiftCards(int index);
 

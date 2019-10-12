@@ -11,27 +11,33 @@ int main() {
 
     // init deck
     Deck deck = Deck();
-    cout << "breakpoint here" << endl;
 
     // generate the cards
     deck.generateDeck();
-    cout << "breakpoint here" << endl;
+    cout << "***********************************" << endl;
+    cout << "** DECK AFTER INITIAL GENERATION **" << endl;
+    cout << "***********************************" << endl;
+    deck.printDeck();
 
     // shuffle the deck
     deck.shuffle();
-    cout << "breakpoint here" << endl;
+    cout << "************************" << endl;
+    cout << "** DECK AFTER SHUFFLE **" << endl;
+    cout << "************************" << endl;
+    deck.printDeck();
 
     // draw initial hand
     Hand hand = Hand(&deck);
-    cout << "breakpoint here" << endl;
 
     // perform exchanges
     int index = 0;
     while(index > -1) {
-        cout << "Enter the index of a card: ";
+        hand.printHand();
+        cout << "Enter the index of a card or a negative number to exit: ";
         cin >> index;
-        hand.exchange(index, 10);
-        cout << "breakpoint here" << endl;
+        Card *card = hand.exchange(index, 14);
+        cout << "Exchanged for the following card: " << endl;
+        card->printCard();
     }
 
     return 0;

@@ -11,8 +11,34 @@
 Action::Action(Action::ActionType type, int count): type(type), count(count) {
 }
 
+const char * const Action::actions[] = {
+        "Add army",
+        "Move over land",
+        "Move over land and water",
+        "build city",
+        "destroy army"
+};
+
+string Action::getName() {
+    return actions[type];
+}
+
 Good::Good(Good::GoodType type, int count): type(type), count(count) {
 }
+
+const char * const Good::goods[] = {
+        "Ruby",
+        "Wood",
+        "Carrot",
+        "Anvil",
+        "Ore",
+        "Wild"
+};
+
+string Good::getName() {
+    return goods[type];
+}
+
 
 Card::Card(Good good, Action action): good(good), combinationType(CombinationType::SINGLE) {
     actions.insert(actions.begin(), action);
@@ -23,6 +49,23 @@ Card::Card(Good good, CombinationType combinationType, Action primaryAction, Act
         combinationType(combinationType) {
     actions.insert(actions.begin(), primaryAction);
     actions.insert(actions.begin(), secondaryAction);
+}
+
+string Card::getCombinationType() {
+    switch (combinationType) {
+        case 0: return "SINGLE";
+        case 1: return "OR";
+        case 2: return "AND";
+    }
+}
+
+void Card::printCard() {
+    cout << "\tGood: " << good.getName() << " (" << good.count << ")" << endl;
+    cout << "\tAction: " << actions[0].getName() << " (" << actions[0].count << ")" << endl;
+    if (actions.size() == 2) {
+        combinationType == 1 ? cout << "\tOR" << endl : cout << "\tAND" << endl;
+        cout << "\tAction: " << actions[1].getName() << " (" << actions[1].count << ")" << endl;
+    }
 }
 
 Deck::Deck() {
@@ -44,6 +87,14 @@ Card* Deck::draw() {
     Card *card = topCard;
     topCard++;
     return card;
+}
+
+void Deck::printDeck() {
+    for (int i = 0; i < 42; i++) {
+        cout << "Card " << i+1 << endl;
+        cards[i].printCard();
+        cout << endl;
+    }
 }
 
 int Hand::cardCost(int cardIndex) {
@@ -80,6 +131,63 @@ Card* Hand::exchange(int cardIndex, int coins) {
     cards[0] = deck->draw();
 
     return card;
+}
+
+void Hand::printHand() {
+    for (int i = 0; i < 187; i++) {
+        cout << "*";
+    }
+    printf("\n|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|\n",
+           cards[0]->good.getName().c_str(), cards[0]->good.count,
+           cards[1]->good.getName().c_str(), cards[1]->good.count,
+           cards[2]->good.getName().c_str(), cards[2]->good.count,
+           cards[3]->good.getName().c_str(), cards[3]->good.count,
+           cards[4]->good.getName().c_str(), cards[4]->good.count,
+           cards[5]->good.getName().c_str(), cards[5]->good.count
+    );
+
+    printf("|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|\n",
+           cards[0]->actions[0].getName().c_str(), cards[0]->actions[0].count,
+           cards[1]->actions[0].getName().c_str(), cards[1]->actions[0].count,
+           cards[2]->actions[0].getName().c_str(), cards[2]->actions[0].count,
+           cards[3]->actions[0].getName().c_str(), cards[3]->actions[0].count,
+           cards[4]->actions[0].getName().c_str(), cards[4]->actions[0].count,
+           cards[5]->actions[0].getName().c_str(), cards[5]->actions[0].count
+    );
+
+    printf("|%-30s|%-30s|%-30s|%-30s|%-30s|%-30s|\n",
+           cards[0]->combinationType == 0 ? "" : cards[0]->getCombinationType().c_str(),
+           cards[1]->combinationType == 0 ? "" : cards[1]->getCombinationType().c_str(),
+           cards[2]->combinationType == 0 ? "" : cards[2]->getCombinationType().c_str(),
+           cards[3]->combinationType == 0 ? "" : cards[3]->getCombinationType().c_str(),
+           cards[4]->combinationType == 0 ? "" : cards[4]->getCombinationType().c_str(),
+           cards[5]->combinationType == 0 ? "" : cards[5]->getCombinationType().c_str()
+    );
+
+    printf("|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|\n",
+           cards[0]->combinationType == 0 ? "" : cards[0]->actions[1].getName().c_str(),
+           cards[0]->combinationType == 0 ? 0 : cards[0]->actions[1].count,
+           cards[1]->combinationType == 0 ? "" : cards[1]->actions[1].getName().c_str(),
+           cards[1]->combinationType == 0 ? 0 : cards[1]->actions[1].count,
+           cards[2]->combinationType == 0 ? "" : cards[2]->actions[1].getName().c_str(),
+           cards[2]->combinationType == 0 ? 0 : cards[2]->actions[1].count,
+           cards[3]->combinationType == 0 ? "" : cards[3]->actions[1].getName().c_str(),
+           cards[3]->combinationType == 0 ? 0 : cards[3]->actions[1].count,
+           cards[4]->combinationType == 0 ? "" : cards[4]->actions[1].getName().c_str(),
+           cards[4]->combinationType == 0 ? 0 : cards[4]->actions[1].count,
+           cards[5]->combinationType == 0 ? "" : cards[5]->actions[1].getName().c_str(),
+           cards[5]->combinationType == 0 ? 0 : cards[5]->actions[1].count
+    );
+
+    printf("|%-30s|%-30s|%-30s|%-30s|%-30s|%-30s|\n",
+            "Cost: 0", "Cost: 1", "Cost: 1", "Cost: 2", "Cost: 2", "Cost: 3"
+    );
+
+    for (int i = 0; i < 187; i++) {
+        cout << "*";
+    }
+    cout << endl;
+
 }
 
 void Deck::generateDeck() {
