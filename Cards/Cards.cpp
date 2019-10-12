@@ -128,7 +128,7 @@ Card* Hand::exchange(int cardIndex, int coins) {
     shiftCards(cardIndex);
 
     // draw new card
-    cards[0] = deck->draw();
+    cards[5] = deck->draw();
 
     return card;
 }

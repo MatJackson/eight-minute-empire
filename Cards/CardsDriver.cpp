@@ -35,9 +35,8 @@ int main() {
         hand.printHand();
         cout << "Enter the index of a card or a negative number to exit: ";
         cin >> index;
-        Card *card = hand.exchange(index, 14);
         cout << "Exchanged for the following card: " << endl;
-        card->printCard();
+        hand.exchange(index, 14);
     }
 
     return 0;
