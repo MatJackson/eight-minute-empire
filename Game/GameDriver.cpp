@@ -12,5 +12,7 @@ int main() {
     Game* game = new Game( );
     game->initialize();
     game->startup();
+    Player* player = game->players->front();
+    player->playCard(*(game->deck->topCard));
 
 }

@@ -34,8 +34,158 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
 
 }
 
+bool Player::playCard(Card& card) {
+    if(card.combinationType==0) {
+        playAction(card.actions[0]);
+    }
+    else {
+        AndOrAction(card.combinationType, card.actions);
+    }
+
+    return true;
+}
+
+bool Player::playAction(Action& action) {
+
+    int count = action.count;
+    string countryName;
+    int armiesNum;
+    bool success;
+    string choice;
+
+    while(count>0) {
+
+        cout << "Take turn... or ignore? Write 'ignore' to ignore or anything else to procceed.";
+        cin >> choice;
+        if(choice=="ignore"){
+            break;
+        }
+
+        switch (action.type) {
+            case 0 : {
+                cout << "Add " << count << " army" << endl;
+                Country *country = nullptr;
+                while (!country) {
+                    cout << "Name country to add armies in: ";
+                    cin >> countryName;
+                    country = map->findCountry(countryName);
+                }
+                while (true) {
+                    cout << "\nHow many armies to add in country? ";
+                    cin >> armiesNum;
+
+                    if (cin.fail() || armiesNum > count || armiesNum <= 0) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Invalid number." << endl;
+                    } else {
+                        break;
+                    }
+                }
+                success = PlaceNewArmies(armiesNum, country);
+                if (success) {
+                    count -= armiesNum;
+                }
+            }
+                break;
+            case 1 : {
+                cout << "Move over " << count << " land" << endl;
+                Country *from = nullptr;
+                while (!from) {
+                    cout << "Name country to move armies from: ";
+                    cin >> countryName;
+                    from = map->findCountry(countryName);
+                }
+                Country *to = nullptr;
+                while (!to) {
+                    cout << "Name country to move armies to: ";
+                    cin >> countryName;
+                    to = map->findCountry(countryName);
+                }
+                while (true) {
+                    cout << "\nHow many armies to move? ";
+                    cin >> armiesNum;
+
+                    if (cin.fail() || armiesNum > count || armiesNum <= 0) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Invalid number." << endl;
+                    } else {
+                        break;
+                    }
+                }
+                success = MoveOverLand(armiesNum, to, from);
+                if (success) {
+                    count -= armiesNum;
+                }
+            }
+                break;
+            case 2 : {
+                cout << "Move over " << count << " land or water" << endl;
+                Country *from = nullptr;
+                while (!from) {
+                    cout << "Name country to move armies from: ";
+                    cin >> countryName;
+                    from = map->findCountry(countryName);
+                }
+                Country *to = nullptr;
+                while (!to) {
+                    cout << "Name country to move armies to: ";
+                    cin >> countryName;
+                    to = map->findCountry(countryName);
+                }
+                while (true) {
+                    cout << "\nHow many armies to move? ";
+                    cin >> armiesNum;
+
+                    if (cin.fail() || armiesNum > count || armiesNum <= 0) {
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Invalid number." << endl;
+                    } else {
+                        break;
+                    }
+                }
+                success = MoveArmies(armiesNum, to, from);
+                if (success) {
+                    count -= armiesNum;
+                }
+            }
+                break;
+            case 3 : {
+                cout << "Build " << count << " city" << endl;
+                Country *country = nullptr;
+                while (!country) {
+                    cout << "Name country to build a city in: ";
+                    cin >> countryName;
+                    country = map->findCountry(countryName);
+                }
+                success = BuildCity(country);
+                if (success) {
+                    count -= 1;
+                }
+            }
+                break;
+            case 4 : {
+                cout << "Destroy an army of another player";
+            }
+                break;
+        }
+
+        if (count>0) {
+            cout << endl << "You still have " << count << " left... ";
+        }
+    }
+
+    return true;
+}
+
+bool Player::AndOrAction(Card::CombinationType type, vector<Action> actions) {
+
+    return true;
+}
+
 bool Player::PayCoin(int coins) {
-    cout << "... Pay " << coins << endl;
     if(*tokens<coins){
         cout << "Player cannot afford that many coins." << endl;
         return false;
@@ -48,7 +198,6 @@ bool Player::PayCoin(int coins) {
 }
 
 bool Player::PlaceNewArmies(int armiesNum, Country *country) {
-    cout << "...Move... Place " << armiesNum << " new armies in " << *(country->name) << endl;
     if(*armies < armiesNum) {
         cout << "Player does not have enough armies to place." << endl;
         return false;
@@ -71,30 +220,7 @@ bool Player::PlaceNewArmies(int armiesNum, Country *country) {
 
 }
 
-bool Player::MoveArmies(int armiesNum, Country *to, Country *from) {
-    cout << "...Move... Move " << armiesNum << " armies from " << *(from->name) << " to " << *(to->name) << endl;
-    countryValue *armyInTo = getArmiesInCountry(to);
-    countryValue *armyInFrom = getArmiesInCountry(from);
-
-    if (!map->isAdjacent(to, from)) {
-        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
-        return false;
-    }
-
-    if (armyInTo->second < armiesNum) {
-        cout << "Not enough armies to move." << endl;
-        return false; //there are not enough to country to move
-    } else {
-        armyInTo->second+= armiesNum;
-        armyInFrom->second-=armiesNum;
-        cout << "Moved " << armiesNum << " armies from " << *(from->name) << " to " << *(to->name) << endl;
-        return true;
-    }
-
-}
-
 bool Player::BuildCity(Country *country) {
-    cout << "...Move... Build a city in " << *(country->name) << endl;
     if(*disks < 1) {
         cout << "Not enough disks." << endl;
         return false;
@@ -117,12 +243,11 @@ bool Player::BuildCity(Country *country) {
     return false;
 }
 
-bool Player::MoveOverLand(int armiesNum, Country *to, Country *from) {
-    cout << "...Move... Move " << armiesNum << " armies from " << *(from->name) << " to " << *(to->name) << endl;
+bool Player::MoveArmies(int armiesNum, Country *to, Country *from) {
     countryValue *armyInTo = getArmiesInCountry(to);
     countryValue *armyInFrom = getArmiesInCountry(from);
 
-    if (!map->isAdjacent(to, from)) {
+    if (map->isAdjacent(to, from)==-1) {
         cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
         return false;
     }
@@ -139,8 +264,39 @@ bool Player::MoveOverLand(int armiesNum, Country *to, Country *from) {
 
 }
 
+bool Player::MoveOverLand(int armiesNum, Country *to, Country *from) {
+
+    int adjacency = map->isAdjacent(to, from);
+    if (adjacency == -1) {
+        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        return false;
+    }
+    if (adjacency == 1 ) {
+        cout << "You can only move from " << *(from->name) << " to " << *(to->name) << " by water." << endl;
+        return false;
+    }
+
+    return MoveArmies(armiesNum, to, from);
+
+}
+
+bool Player::MoveOverWater(int armiesNum, Country *to, Country *from) {
+
+    int adjacency = map->isAdjacent(to, from);
+    if (adjacency == -1) {
+        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        return false;
+    }
+    if (adjacency == 0 ) {
+        cout << "You can only move from " << *(from->name) << " to " << *(to->name) << " by land." << endl;
+        return false;
+    }
+
+    return MoveArmies(armiesNum, to, from);
+
+}
+
 bool Player::DestroyArmy(Country *country, Player *player) {
-    cout << "...Move... Destroy an army from " << *(player->name) << " in " << *(country->name) << endl;
 
     countryValue *armyIn = getArmiesInCountry(country);
 
@@ -156,6 +312,10 @@ bool Player::DestroyArmy(Country *country, Player *player) {
 
     return false;
 
+}
+
+bool Player::Ignore() {
+    return true;
 }
 
 void Player::display() {
