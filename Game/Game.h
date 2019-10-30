@@ -18,8 +18,8 @@ public:
     Deck* deck;
 
     Game();
-    void initialize();
-    void startup();
+    int initialize();
+    int startup();
 };
 
 

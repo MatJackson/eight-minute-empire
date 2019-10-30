@@ -41,6 +41,7 @@ Map* MapLoader::useFile(string fileName)
             string delimiter = ",";
             string first = line.substr(0, line.find(delimiter));
             string second = line.substr(line.find(delimiter) + 1, line.length());
+
             if(first==line) {
                 cout << "Must delimit elements by a comma." << endl;
                 return nullptr;
@@ -55,8 +56,15 @@ Map* MapLoader::useFile(string fileName)
                 }
             }
             if (adjacencies) {
+                string delimiter = ":";
+                string type = second.substr(second.find(delimiter) + 1, delimiter.length());
+                string adjacency = second.substr(0, second.find(delimiter));
+                if(type!="W" && type!="L") {
+                    cout << "Each adjacency has to have a type of W or L." << endl;
+                    return nullptr;
+                }
                 try {
-                    bool found = map->addAdjacency(map->findCountry(first), map->findCountry(second));
+                    bool found = map->addAdjacency(map->findCountry(first), map->findCountry(adjacency), (type=="L") ? 0 : 1);
                     if(!found) {
                         cout << "Country listed in Adjacency list not found." << endl;
                         return nullptr;

@@ -2,7 +2,6 @@
 // Created by Tamar M on 2019-09-20.
 //
 
-#include <algorithm>
 #include "Map.h"
 #include <iostream>
 #include <list>
@@ -18,7 +17,7 @@ Map::Map()
 
 void Map::addCountry(Country *country)
 {
-    vector<Country*> init = vector<Country*>();
+    vector<adjacency> init = vector<adjacency>();
     if(countries->empty()) { startingRegion=country;}
     countries->push_back(make_pair(country, init));
     //cout << "Added country " << *(country->name) << " to the map." << endl;
@@ -36,8 +35,9 @@ void Map::addCountry(Country *country)
 
 }
 
-bool Map::addAdjacency(Country *from, Country *to)
+bool Map::addAdjacency(Country *from, Country *to, bool type)
 {
+    //type is 0 for land and 1 for water
     if(!to || !from) {
         return false;
     }
@@ -45,10 +45,10 @@ bool Map::addAdjacency(Country *from, Country *to)
     vector<country>::iterator i;
     for (i = (countries)->begin(); i !=(countries)->end(); ++i) {
         if (i->first == to) {
-            i->second.push_back(from);
+            i->second.push_back(make_pair(from, type));
         }
         if (i->first == from) {
-            i->second.push_back(to);
+            i->second.push_back(make_pair(to, type));
         }
     }
 
@@ -56,20 +56,24 @@ bool Map::addAdjacency(Country *from, Country *to)
     return true;
 }
 
-bool Map::isAdjacent(Country *from, Country *to)
+int Map::isAdjacent(Country *from, Country *to)
 {
     vector<country>::iterator i;
     for (i = (countries)->begin(); i !=(countries)->end(); ++i) {
-        if (i->first == to){
-            auto it = find(i->second.begin(), i->second.end(), from);
-            if (it != i->second.end())
-            {
-                return true;
+        if (i->first == to) {
+            vector<adjacency>::iterator t;
+            for (t = (i->second).begin(); t != (i->second).end(); ++t) {
+                if (t->first == from) {
+                    if (t->second == 0)
+                        return 0;
+                    if (t->second == 1)
+                        return 1;
+                }
             }
         }
     }
 
-    return false;
+    return -1;
 }
 
 Country* Map::findCountry(string countryFind) {
@@ -93,9 +97,9 @@ void Map::display() {
         cout << *(i->first)->name << endl;
         cout << "    Continent = " << *(i->first)->continent->name << endl;
         cout << "    Adjacent to..." << endl;
-        vector<Country*>::iterator t;
+        vector<adjacency>::iterator t;
         for (t = (i->second).begin(); t !=(i->second).end(); ++t) {
-            cout << "         " << *((*t)->name) << endl;
+            cout << "         " << *((t->first)->name) << " by " << ((t->second == 0) ? "land" : "water") << endl;
         }
         cout << endl;
     }
@@ -163,18 +167,18 @@ void Map::search(Country* countrySearch, vector<pair<Country*, bool>> *visited, 
     for (t = (countries)->begin(); t !=(countries)->end(); ++t) {
         if (t->first == countrySearch) {
 
-            vector<Country*>::iterator w;
+            vector<adjacency>::iterator w;
             for (w = (t->second).begin(); w !=(t->second).end(); ++w) {
 
-                if (byContinent && (*((*w)->continent->name) != *(countrySearch->continent->name))) {
+                if (byContinent && (*((w->first)->continent->name) != *(countrySearch->continent->name))) {
                     continue;
                 }
 
                 vector<pair<Country*, bool>>::iterator q;
                 for (q = visited->begin(); q !=visited->end(); ++q) {
-                    if ((q->first) == *w && (!q->second))
+                    if ((q->first) == w->first && (!q->second))
                     {
-                        search(*w, visited, byContinent);
+                        search(w->first, visited, byContinent);
                     }
                 }
 

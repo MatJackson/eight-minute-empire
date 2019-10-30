@@ -27,7 +27,8 @@ struct Country {
 
 class Map {
 public:
-    typedef pair<Country*, vector<Country*>> country;
+    typedef pair<Country*, bool> adjacency;
+    typedef pair<Country*, vector<adjacency>> country;
     typedef pair<Continent*, vector<Country*>> continent;
     vector<country> *countries;
     vector<continent> *continents;
@@ -35,8 +36,8 @@ public:
 
     Map();
     void addCountry(Country *country);
-    bool addAdjacency(Country *from, Country *to);
-    bool isAdjacent(Country *from, Country *to);
+    bool addAdjacency(Country *from, Country *to, bool type);
+    int isAdjacent(Country *from, Country *to);
     Country* findCountry(string country);
     void display();
     bool isValid();

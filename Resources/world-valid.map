@@ -23,23 +23,23 @@ Spain,Europe
 Italy,Europe
 
 [Adjacencies]
-China,Japan
-India,Indonesia
-Bangladesh,India
-China,Bangladesh
-China,Russia
-Russia,Egypt
-Egypt,Ethiopia
-Egypt,Nigeria
-Russia,France
-France,Portugal
-Portugal,Spain
-Spain,Italy
-Italy,Russia
-Portugal,Canada
-Canada,United States
-United States,Brazil
-Brazil,Peru
-Peru,Mexico
-Brazil,Mexico
-United States,Mexico
+China,Japan:L
+India,Indonesia:L
+Bangladesh,India:L
+China,Bangladesh:W
+China,Russia:L
+Russia,Egypt:L
+Egypt,Ethiopia:L
+Egypt,Nigeria:L
+Russia,France:W
+France,Portugal:L
+Portugal,Spain:L
+Spain,Italy:L
+Italy,Russia:L
+Portugal,Canada:L
+Canada,United States:L
+United States,Brazil:L
+Brazil,Peru:L
+Peru,Mexico:L
+Brazil,Mexico:L
+United States,Mexico:L

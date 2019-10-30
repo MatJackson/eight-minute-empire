@@ -27,12 +27,17 @@ public:
     vector<countryValue> *armiesIn;
 
     Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
+    bool playCard(Card &card);
+    bool playAction(Action& action);
+    bool AndOrAction(Card::CombinationType type, vector<Action> actions);
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country);
     bool MoveArmies(int armiesNum, Country *to, Country *from);
     bool MoveOverLand(int armiesNum, Country *to, Country *from);
+    bool MoveOverWater(int armiesNum, Country *to, Country *from);
     bool BuildCity(Country *country);
     bool DestroyArmy(Country *country, Player *player);
+    bool Ignore();
     void display();
     pair<Country*, int>* getArmiesInCountry(Country *country);
     pair<Country*, int>* getCitiesInCountry(Country *country);

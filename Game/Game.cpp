@@ -13,11 +13,14 @@ Game::Game()
 
 }
 
-void Game::initialize()
+int Game::initialize()
 {
     //initialize map
     MapLoader* mapLoader = new MapLoader();
     map = mapLoader->map;
+    if(!map) {
+        return 0;
+    }
 
     //initialize deck
     deck = new Deck();
@@ -60,11 +63,11 @@ void Game::initialize()
         }
     }
 
-
+    return 0;
 
 }
 
-void Game::startup()
+int Game::startup()
 {
     //shuffle deck
     deck->shuffle();
@@ -130,5 +133,7 @@ void Game::startup()
         printf("\t|%-10s|%5d|%5d|%5d|\n", "Player", (*(player->bidding->getAmountBid())), *(player->tokens), *(player->age));
     }
     cout << endl;
+
+    return 0;
 
 }
