@@ -11,7 +11,7 @@ int main() {
 
     // create players
     int *player1Tokens = new int(9);
-    int *player1Age = new int(16);
+    int *player1Age = new int(11);
     BiddingFacility biddingFacility1 = BiddingFacility(player1Tokens, player1Age);
     bidders.push_back(biddingFacility1);
 

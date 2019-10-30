@@ -31,6 +31,7 @@ public:
     typedef pair<Continent*, vector<Country*>> continent;
     vector<country> *countries;
     vector<continent> *continents;
+    Country* startingRegion;
 
     Map();
     void addCountry(Country *country);
