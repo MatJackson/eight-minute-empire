@@ -56,7 +56,7 @@ bool Player::PlaceNewArmies(int armiesNum, Country *country) {
 
     countryValue *cityIn = getCitiesInCountry(country);
     if (cityIn->first == country) {
-        if (cityIn->second <= 0) {
+        if (cityIn->second <= 0 && country!=map->startingRegion) {
             cout << "Player does not have cities in that country. Cannot place armies." << endl;
             return false;
         }

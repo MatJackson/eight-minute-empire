@@ -13,11 +13,13 @@ Map::Map()
 {
     countries = new vector<country>;
     continents = new vector<continent>;
+    startingRegion = nullptr;
 }
 
 void Map::addCountry(Country *country)
 {
     vector<Country*> init = vector<Country*>();
+    if(countries->empty()) { startingRegion=country;}
     countries->push_back(make_pair(country, init));
     //cout << "Added country " << *(country->name) << " to the map." << endl;
     vector<continent>::iterator i;

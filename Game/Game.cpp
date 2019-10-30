@@ -75,7 +75,13 @@ void Game::startup()
     hand.printHand();
 
     //place armies at starting point
-    // !!!!!
+    cout << "\nPlace 3 armies on the starting region of the board! (" << *(map->startingRegion->name) << ")" << endl;
+    for (auto player : *players) {
+        player->PlaceNewArmies(3, map->startingRegion);
+}
+
+    //IMPLEMENT TURN
+    //!!!!!!!!!!!!!!!!!!!!!!!!
 
     //player claims coin tokens
     int coinsPerPlayer = 0;
