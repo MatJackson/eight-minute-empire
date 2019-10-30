@@ -6,22 +6,26 @@
 #define EIGHT_MINUTE_EMPIRE_PLAYER_H
 
 #include "../Maps/Map.h"
+#include "../Bidding/BiddingFacility.h"
+#include "../Cards/Cards.h"
 
 using namespace std;
 
 class Player {
 
-private:
+public:
     typedef pair<Country*, int> countryValue;
+    Map *map;
     string *name;
     int *disks;
     int *tokens;
     int *armies;
+    int *age;
+    BiddingFacility *bidding;
+    vector<Card*> *hand;
     vector<countryValue> *citiesIn;
     vector<countryValue> *armiesIn;
-    Map *map;
 
-public:
     Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country);
@@ -33,10 +37,9 @@ public:
     pair<Country*, int>* getArmiesInCountry(Country *country);
     pair<Country*, int>* getCitiesInCountry(Country *country);
     void armyDestroyed(Country* country);
-    int getDisks();
-    int getTokens();
-    int getArmies();
+    void setDisks(int disk);
     void setTokens(int token);
+    void setArmies(int army);
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_PLAYER_H

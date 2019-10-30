@@ -12,6 +12,12 @@ BiddingFacility::BiddingFacility(int *availableCoin, int *playerAge): availableC
     amountBid = new int();
 }
 
+BiddingFacility::BiddingFacility(int* tokens) {
+    amountBid = new int();
+    playerAge = new int();
+    availableCoin = tokens;
+}
+
 void BiddingFacility::bid() {
     while (true) {
         int *input = new int();

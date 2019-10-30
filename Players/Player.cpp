@@ -22,10 +22,15 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
 
     armiesIn = new vector<countryValue>;
     for (auto country : *(map->countries)) {
-        armiesIn->push_back(make_pair(country.first, 1));
+        armiesIn->push_back(make_pair(country.first, 0));
     }
 
     this->map = map;
+
+    bidding = new BiddingFacility(tokens);
+    hand = new vector<Card*>;
+
+    age = new int(0);
 
 }
 
@@ -200,19 +205,15 @@ void Player::armyDestroyed(Country *country) {
     }
 }
 
-int Player::getDisks() {
-    return *disks;
-}
-
-int Player::getTokens() {
-    return *tokens;
-}
-
-int Player::getArmies() {
-    return *armies;
+void Player::setDisks(int disk) {
+    *disks = disk;
 }
 
 void Player::setTokens(int token) {
     *tokens = token;
+}
+
+void Player::setArmies(int army) {
+    *armies = army;
 }
 

@@ -12,8 +12,9 @@ using namespace std;
 class MapLoader {
 public:
     Map *map;
-    MapLoader(string fileName);
-    Map* initialize(string fileName);
+    MapLoader();
+    Map* useFile(string fileName);
+    Map* load();
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_MAPLOADER_H

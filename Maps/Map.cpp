@@ -19,7 +19,7 @@ void Map::addCountry(Country *country)
 {
     vector<Country*> init = vector<Country*>();
     countries->push_back(make_pair(country, init));
-    cout << "Added country " << *(country->name) << " to the map." << endl;
+    //cout << "Added country " << *(country->name) << " to the map." << endl;
     vector<continent>::iterator i;
     for (i = (continents)->begin(); i !=(continents)->end(); ++i) {
         if (*(*i).first->name == *(country->continent->name)) {
@@ -30,7 +30,7 @@ void Map::addCountry(Country *country)
     vector<Country*> countriesInContinent = vector<Country*>();
     countriesInContinent.push_back(country);
     continents->push_back(make_pair((country->continent), (countriesInContinent)));
-    cout << "Added continent " << *(country->continent->name) << " to the map." << endl;
+    //cout << "Added continent " << *(country->continent->name) << " to the map." << endl;
 
 }
 
@@ -50,7 +50,7 @@ bool Map::addAdjacency(Country *from, Country *to)
         }
     }
 
-    cout << "Added adjacency between " << *(to->name) << " and " << *(from->name)<< " to the map." << endl;
+    //cout << "Added adjacency between " << *(to->name) << " and " << *(from->name)<< " to the map." << endl;
     return true;
 }
 

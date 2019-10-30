@@ -4,24 +4,19 @@
 
 #include "MapLoader.h"
 #include <fstream>
-#include <sstream>
 #include <iostream>
 
 using namespace std;
 
-MapLoader::MapLoader(string fileName)
+MapLoader::MapLoader()
 {
-    map = initialize(fileName);
+    map = load();
 }
 
-Map* MapLoader::initialize(string fileName)
+Map* MapLoader::useFile(string fileName)
 {
     ifstream infile;
-    try {
-        infile.open(fileName);
-    } catch (const exception& e) {
-        cout << "Invalid file." << endl;
-    }
+    infile.open(fileName);
 
     Map *map = new Map();
 
@@ -82,5 +77,20 @@ Map* MapLoader::initialize(string fileName)
         return nullptr;
     }
 
+}
+
+Map* MapLoader::load()
+{
+    Map* tryMap;
+    do {
+        cout << "Enter map file name: ";
+        string fileName;
+        cin >> fileName;
+        tryMap = useFile("../Resources/" + fileName);
+    } while (tryMap == nullptr);
+
+    tryMap->display();
+
+    return tryMap;
 }
 
