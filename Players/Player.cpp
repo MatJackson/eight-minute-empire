@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <limits>
 #include "Player.h"
 #include "../Maps/Map.h"
 

@@ -10,12 +10,11 @@ using namespace std;
 int main() {
 
     Game* game = new Game( );
+
     game->initialize();
+
     game->startup();
-    Player* player = game->players->front();
-    while(true) {
-        game->deck->shuffle();
-        player->playCard(*(game->deck->topCard));
-        player->display();
-    }
+
+    game->mainGameLoop();
+
 }
