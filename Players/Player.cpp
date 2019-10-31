@@ -35,6 +35,10 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
 }
 
 bool Player::playCard(Card& card) {
+
+    cout << "NEW CARD SELECTED! " << endl;
+    card.printCard();
+
     if(card.combinationType==0) {
         playAction(card.actions[0]);
     }
@@ -53,12 +57,12 @@ bool Player::playAction(Action& action) {
     bool success;
     string choice;
 
-    while(count>0) {
+    do {
 
-        cout << "Take turn... or ignore? Write 'ignore' to ignore or anything else to procceed.";
+        cout << "Write 'ignore' to skip or anything else to proceed. ";
         cin >> choice;
         if(choice=="ignore"){
-            break;
+            return false;
         }
 
         switch (action.type) {
@@ -175,12 +179,36 @@ bool Player::playAction(Action& action) {
         if (count>0) {
             cout << endl << "You still have " << count << " left... ";
         }
-    }
+
+    } while(count>0);
 
     return true;
 }
 
 bool Player::AndOrAction(Card::CombinationType type, vector<Action> actions) {
+
+    cout << "What action would you like to do" << ((type==2) ? " first?" : "?") << " Select by typing the index of the actions (1 or 2).";
+
+        int index;
+        while (true) {
+            cin >> index;
+
+            if (cin.fail() || index > 2 || index < 1) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid number." << endl;
+            } else {
+                break;
+            }
+        }
+        playAction(actions[index-1]);
+        if(type==1) {
+            return true;
+        }
+        actions.erase(actions.begin()+(index-1));
+
+        cout << "Next action: " << (actions.begin()->getName()) << endl;
+        playAction(actions[0]);
 
     return true;
 }
@@ -198,10 +226,6 @@ bool Player::PayCoin(int coins) {
 }
 
 bool Player::PlaceNewArmies(int armiesNum, Country *country) {
-    if(*armies < armiesNum) {
-        cout << "Player does not have enough armies to place." << endl;
-        return false;
-    }
 
     countryValue *cityIn = getCitiesInCountry(country);
     if (cityIn->first == country) {
