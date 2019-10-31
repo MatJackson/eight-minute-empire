@@ -87,20 +87,24 @@ int Game::startup()
     //IMPLEMENT TURN
     //!!!!!!!!!!!!!!!!!!!!!!!!
 
-    //player claims coin tokens
+    // Player claims coin tokens and maxCardCount determined.
     int coinsPerPlayer = 0;
     switch(playerNum)
     {
         case 2:
+            maxCardCount = new int(2);
             coinsPerPlayer = 14;
             break;
         case 3:
+            maxCardCount = new int(10);
             coinsPerPlayer = 11;
             break;
         case 4:
+            maxCardCount = new int(8);
             coinsPerPlayer = 9;
             break;
         case 5:
+            maxCardCount = new int(7);
             coinsPerPlayer = 8;
             break;
     }
@@ -169,10 +173,29 @@ void Game::takeTurn(Player *player) {
     selectedCard->printCard();
 
     // play the selected card
+    player->display();
     player->playCard(*selectedCard);
     cout << endl; // breakpoint line.
 }
 
 void Game::mainGameLoop() {
-    takeTurn(startingPlayer);
+    int playerCount = players->size();
+    int indexOfActivePlayer = 0;
+    bool gameOver = false;
+
+    // get index of starting player
+    for (auto player : *players) {
+        if (startingPlayer == player) {
+            break;
+        } else {
+            indexOfActivePlayer++;
+        }
+    }
+
+    while (!gameOver) {
+        takeTurn(players->at(indexOfActivePlayer));
+
+        indexOfActivePlayer = (indexOfActivePlayer + 1) % playerCount;
+        gameOver = players->at(indexOfActivePlayer)->hand->size() == *maxCardCount;
+    }
 }

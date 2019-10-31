@@ -18,6 +18,7 @@ public:
     Deck* deck;
     Hand* hand;
     Player* startingPlayer;
+    int *maxCardCount;
 
     Game();
     int initialize();

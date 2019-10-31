@@ -17,4 +17,6 @@ int main() {
 
     game->mainGameLoop();
 
+    cout << "break here for debug ending" << endl;
+
 }
