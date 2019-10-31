@@ -16,5 +16,6 @@ int main() {
     while(true) {
         game->deck->shuffle();
         player->playCard(*(game->deck->topCard));
+        player->display();
     }
 }

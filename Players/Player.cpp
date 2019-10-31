@@ -36,7 +36,7 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
 
 bool Player::playCard(Card& card) {
 
-    cout << "NEW CARD SELECTED! " << endl;
+    cout << "\nNEW CARD SELECTED! " << endl;
     card.printCard();
 
     if(card.combinationType==0) {
@@ -62,12 +62,11 @@ bool Player::playAction(Action& action) {
         cout << "Write 'ignore' to skip or anything else to proceed. ";
         cin >> choice;
         if(choice=="ignore"){
-            return false;
+            return Ignore();
         }
 
         switch (action.type) {
             case 0 : {
-                cout << "Add " << count << " army" << endl;
                 Country *country = nullptr;
                 while (!country) {
                     cout << "Name country to add armies in: ";
@@ -93,7 +92,6 @@ bool Player::playAction(Action& action) {
             }
                 break;
             case 1 : {
-                cout << "Move over " << count << " land" << endl;
                 Country *from = nullptr;
                 while (!from) {
                     cout << "Name country to move armies from: ";
@@ -125,7 +123,6 @@ bool Player::playAction(Action& action) {
             }
                 break;
             case 2 : {
-                cout << "Move over " << count << " land or water" << endl;
                 Country *from = nullptr;
                 while (!from) {
                     cout << "Name country to move armies from: ";
@@ -157,7 +154,6 @@ bool Player::playAction(Action& action) {
             }
                 break;
             case 3 : {
-                cout << "Build " << count << " city" << endl;
                 Country *country = nullptr;
                 while (!country) {
                     cout << "Name country to build a city in: ";
@@ -226,7 +222,10 @@ bool Player::PayCoin(int coins) {
 }
 
 bool Player::PlaceNewArmies(int armiesNum, Country *country) {
-
+    if(*armies < armiesNum) {
+        cout << "Player does not have enough armies to place." << endl;
+        return false;
+    }
     countryValue *cityIn = getCitiesInCountry(country);
     if (cityIn->first == country) {
         if (cityIn->second <= 0 && country!=map->startingRegion) {
@@ -339,7 +338,7 @@ bool Player::DestroyArmy(Country *country, Player *player) {
 }
 
 bool Player::Ignore() {
-    return true;
+    return false;
 }
 
 void Player::display() {
