@@ -35,6 +35,10 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
 }
 
 bool Player::playCard(Card& card) {
+
+    cout << "\nNEW CARD SELECTED! " << endl;
+    card.printCard();
+
     if(card.combinationType==0) {
         playAction(card.actions[0]);
     }
@@ -53,17 +57,16 @@ bool Player::playAction(Action& action) {
     bool success;
     string choice;
 
-    while(count>0) {
+    do {
 
-        cout << "Take turn... or ignore? Write 'ignore' to ignore or anything else to procceed.";
+        cout << "Write 'ignore' to skip or anything else to proceed. ";
         cin >> choice;
         if(choice=="ignore"){
-            break;
+            return Ignore();
         }
 
         switch (action.type) {
             case 0 : {
-                cout << "Add " << count << " army" << endl;
                 Country *country = nullptr;
                 while (!country) {
                     cout << "Name country to add armies in: ";
@@ -89,7 +92,6 @@ bool Player::playAction(Action& action) {
             }
                 break;
             case 1 : {
-                cout << "Move over " << count << " land" << endl;
                 Country *from = nullptr;
                 while (!from) {
                     cout << "Name country to move armies from: ";
@@ -121,7 +123,6 @@ bool Player::playAction(Action& action) {
             }
                 break;
             case 2 : {
-                cout << "Move over " << count << " land or water" << endl;
                 Country *from = nullptr;
                 while (!from) {
                     cout << "Name country to move armies from: ";
@@ -153,7 +154,6 @@ bool Player::playAction(Action& action) {
             }
                 break;
             case 3 : {
-                cout << "Build " << count << " city" << endl;
                 Country *country = nullptr;
                 while (!country) {
                     cout << "Name country to build a city in: ";
@@ -175,12 +175,36 @@ bool Player::playAction(Action& action) {
         if (count>0) {
             cout << endl << "You still have " << count << " left... ";
         }
-    }
+
+    } while(count>0);
 
     return true;
 }
 
 bool Player::AndOrAction(Card::CombinationType type, vector<Action> actions) {
+
+    cout << "What action would you like to do" << ((type==2) ? " first?" : "?") << " Select by typing the index of the actions (1 or 2).";
+
+        int index;
+        while (true) {
+            cin >> index;
+
+            if (cin.fail() || index > 2 || index < 1) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid number." << endl;
+            } else {
+                break;
+            }
+        }
+        playAction(actions[index-1]);
+        if(type==1) {
+            return true;
+        }
+        actions.erase(actions.begin()+(index-1));
+
+        cout << "Next action: " << (actions.begin()->getName()) << endl;
+        playAction(actions[0]);
 
     return true;
 }
@@ -202,7 +226,6 @@ bool Player::PlaceNewArmies(int armiesNum, Country *country) {
         cout << "Player does not have enough armies to place." << endl;
         return false;
     }
-
     countryValue *cityIn = getCitiesInCountry(country);
     if (cityIn->first == country) {
         if (cityIn->second <= 0 && country!=map->startingRegion) {
@@ -315,7 +338,7 @@ bool Player::DestroyArmy(Country *country, Player *player) {
 }
 
 bool Player::Ignore() {
-    return true;
+    return false;
 }
 
 void Player::display() {

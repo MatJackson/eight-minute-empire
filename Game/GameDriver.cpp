@@ -13,6 +13,9 @@ int main() {
     game->initialize();
     game->startup();
     Player* player = game->players->front();
-    player->playCard(*(game->deck->topCard));
-
+    while(true) {
+        game->deck->shuffle();
+        player->playCard(*(game->deck->topCard));
+        player->display();
+    }
 }
