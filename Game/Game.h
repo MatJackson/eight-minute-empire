@@ -16,6 +16,7 @@ public:
     vector<Player*> *players;
     Map* map;
     Deck* deck;
+    Player* non_player;
 
     Game();
     int initialize();

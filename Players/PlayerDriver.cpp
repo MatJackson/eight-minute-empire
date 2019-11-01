@@ -25,10 +25,10 @@ int main() {
     player->BuildCity(usa);
     player->display();
 
-    player->PlaceNewArmies(80, usa);
+    player->PlaceNewArmies(80, usa, false);
     player->display();
 
-    player2->PlaceNewArmies(9, usa);
+    player2->PlaceNewArmies(9, usa, false);
     player2->display();
 
     player->MoveOverLand(6, usa, can);
@@ -44,7 +44,7 @@ int main() {
     player->DestroyArmy(usa, player2);
     player2->display();
 
-    player->PlaceNewArmies(1, usa);
+    player->PlaceNewArmies(1, usa, false);
     player->DestroyArmy(usa, player2);
     player2->display();
 

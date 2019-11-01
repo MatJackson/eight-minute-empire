@@ -63,6 +63,13 @@ int Game::initialize()
         }
     }
 
+    if(players->size()==2) {
+        non_player = new Player(map, "Player3", 3, 0, 4);
+    }
+    else {
+        non_player= nullptr;
+    }
+
     return 0;
 
 }
@@ -80,11 +87,26 @@ int Game::startup()
     //place armies at starting point
     cout << "\nPlace 3 armies on the starting region of the board! (" << *(map->startingRegion->name) << ")" << endl;
     for (auto player : *players) {
-        player->PlaceNewArmies(3, map->startingRegion);
+        player->PlaceNewArmies(3, map->startingRegion, false);
 }
 
-    //IMPLEMENT TURN
-    //!!!!!!!!!!!!!!!!!!!!!!!!
+    //If 2 players, place armies of 3rd non-player
+    if(players->size()==2) {
+        cout << "\nSince there are only 2 players, each player "
+                "takes turns placing one army at a time of a third, non-player in any region on the "
+                "board until ten armies have been placed!" << endl;
+        for (int c = 0; c < 10 ; c++) {
+            int turn = c%2;
+            string countryName;
+            Country *country = nullptr;
+            while (!country) {
+                cout << "Your turn, " << *((*players)[turn]->name) << ". Which country would you like to add one army for Player3? ";
+                cin >> countryName;
+                country = map->findCountry(countryName);
+            }
+            non_player->PlaceNewArmies(1, country, true);
+        }
+    }
 
     //player claims coin tokens
     int coinsPerPlayer = 0;
@@ -104,11 +126,21 @@ int Game::startup()
             break;
     }
     cout << endl << "Each player is given " << coinsPerPlayer << " coins.\n" << endl;
+    cout << endl << "Here are the initial states of each player" << endl;
     for (auto player : *players) {
         player->setTokens(coinsPerPlayer);
+        player->display();
     }
 
     //players bid
+    cout << "\n\n----------- BIDDING ------------------------\n";
+    cout << "Players must bid to decide who starts first. The biding consists of each player"
+            "picking up his coins and privately chooses a number to bid. When all players are ready, all players"
+            "reveal the amount they have chosen to bid at the same time.\nThe player who bids the most coins"
+            "wins the bid and puts the coins he bid in the supply. Other players do not pay coins if they lost"
+            "the bid. If the bids are tied for most, the youngest player wins the bid and pays his coins.\nIf all"
+            "bids are zero, the youngest player wins the bid.\n\n";
+
     for (auto player : *players) {
         *(player->bidding->playerAge)=*(player->age);
         *(player->bidding->availableCoin)=*(player->tokens);
