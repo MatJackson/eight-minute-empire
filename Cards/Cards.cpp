@@ -115,11 +115,14 @@ void Hand::shiftCards(int index) {
     }
 }
 
-Card* Hand::exchange(int cardIndex, int coins) {
+Card* Hand::exchange(int cardIndex, int *coins) {
     // check if player can afford exchange
-    if (cardCost(cardIndex) > coins) {
+    if (cardCost(cardIndex) > *coins) {
         return nullptr;
     }
+
+    // pay the piper
+    *coins = *coins - cardCost(cardIndex);
 
     // save reference to card
     Card *card = (cards[cardIndex]);

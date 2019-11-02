@@ -16,10 +16,15 @@ public:
     vector<Player*> *players;
     Map* map;
     Deck* deck;
+    Hand* hand;
+    Player* startingPlayer;
+    int *maxCardCount;
 
     Game();
     int initialize();
     int startup();
+    void takeTurn(Player* player);
+    void mainGameLoop();
 };
 
 
