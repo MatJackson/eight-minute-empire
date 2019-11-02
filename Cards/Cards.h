@@ -85,7 +85,7 @@ public:
     Deck *deck;
     array<Card *, 6> cards;
     explicit Hand(Deck *deck);
-    Card* exchange(int cardIndex, int coins);
+    Card* exchange(int cardIndex, int *coins);
     int cardCost(int cardIndex);
     void printHand();
 private:

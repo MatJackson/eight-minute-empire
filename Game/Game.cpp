@@ -5,6 +5,7 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
+#include <limits>
 
 int playerNum;
 
@@ -80,9 +81,9 @@ int Game::startup()
     deck->shuffle();
 
     //generate open cards and display
-    Hand hand = Hand(deck);
+    hand = new Hand(deck);
     cout << "6 first open cards!" << endl;
-    hand.printHand();
+    hand->printHand();
 
     //place armies at starting point
     cout << "\nPlace 3 armies on the starting region of the board! (" << *(map->startingRegion->name) << ")" << endl;
@@ -108,20 +109,24 @@ int Game::startup()
         }
     }
 
-    //player claims coin tokens
+    // Player claims coin tokens and maxCardCount determined.
     int coinsPerPlayer = 0;
     switch(playerNum)
     {
         case 2:
+            maxCardCount = new int(2);
             coinsPerPlayer = 14;
             break;
         case 3:
+            maxCardCount = new int(10);
             coinsPerPlayer = 11;
             break;
         case 4:
+            maxCardCount = new int(8);
             coinsPerPlayer = 9;
             break;
         case 5:
+            maxCardCount = new int(7);
             coinsPerPlayer = 8;
             break;
     }
@@ -158,6 +163,7 @@ int Game::startup()
         }
     }
     winningBidder->payBid();
+    startingPlayer = winner;
     cout << "Winner is: " << *(winner->name) << endl;
     cout << "State After Paying Bid:" << endl;
     printf("\t|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
@@ -168,4 +174,60 @@ int Game::startup()
 
     return 0;
 
+}
+
+void Game::takeTurn(Player *player) {
+    Card *selectedCard = nullptr;
+    int indexOfCardToExchange;
+
+    // Select a card
+    hand->printHand();
+    cout << *player->name << ": Coins = " << *player->tokens << endl;
+    while (selectedCard == nullptr) {
+        cout << "Please select the index [0-5] of the card you wish to exchange:";
+        cin >> indexOfCardToExchange;
+
+        if (cin.fail() || indexOfCardToExchange < 0 || indexOfCardToExchange > 5) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            selectedCard = nullptr;
+        } else {
+            selectedCard = hand->exchange(indexOfCardToExchange, player->tokens);
+        }
+    }
+
+    // Add the card to the player hand
+    player->hand->push_back(selectedCard);
+
+    // Display the selected card
+    cout << endl;
+    cout << "You have selectedCard:" << endl;
+    selectedCard->printCard();
+
+    // play the selected card
+    player->display();
+    player->playCard(*selectedCard);
+    cout << endl; // breakpoint line.
+}
+
+void Game::mainGameLoop() {
+    int playerCount = players->size();
+    int indexOfActivePlayer = 0;
+    bool gameOver = false;
+
+    // get index of starting player
+    for (auto player : *players) {
+        if (startingPlayer == player) {
+            break;
+        } else {
+            indexOfActivePlayer++;
+        }
+    }
+
+    while (!gameOver) {
+        takeTurn(players->at(indexOfActivePlayer));
+
+        indexOfActivePlayer = (indexOfActivePlayer + 1) % playerCount;
+        gameOver = players->at(indexOfActivePlayer)->hand->size() == *maxCardCount;
+    }
 }
