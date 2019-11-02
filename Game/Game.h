@@ -26,6 +26,10 @@ public:
     int startup();
     void takeTurn(Player* player);
     void mainGameLoop();
+    bool playCard(Card& card, Player& player);
+    bool playAction(Action& action, Player& player);
+    bool AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player);
+    Player* findPlayerByName(string playerName);
 };
 
 
