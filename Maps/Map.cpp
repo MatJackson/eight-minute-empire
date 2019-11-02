@@ -5,6 +5,7 @@
 #include "Map.h"
 #include <iostream>
 #include <list>
+#include <iomanip>
 
 using namespace std;
 
@@ -89,34 +90,18 @@ Country* Map::findCountry(string countryFind) {
 
 
 void Map::display() {
-    cout << endl << "-------------------------------------------------" << endl;
-    cout << endl << "Here is the map!" << endl << endl;
-    cout << "Countries: " << endl;
+    cout << endl << "----------- THE MAP ----------------------------------" << endl;
+    cout << left << " " <<  setw(20) << "Country"  << setw(20) << "Continent"   << setw(70) << "Adjacent to..." << endl << endl;
     vector<country>::iterator i;
     for (i = countries->begin(); i !=countries->end(); ++i) {
-        cout << *(i->first)->name << endl;
-        cout << "    Continent = " << *(i->first)->continent->name << endl;
-        cout << "    Adjacent to..." << endl;
+        cout << left << '|' << setw(20) << *(i->first)->name << '|' << setw(20) << *(i->first)->continent->name  << '|';
         vector<adjacency>::iterator t;
         for (t = (i->second).begin(); t !=(i->second).end(); ++t) {
-            cout << "         " << *((t->first)->name) << " by " << ((t->second == 0) ? "land" : "water") << endl;
+            cout << left << setw(25) << *((t->first)->name) + ": " + ((t->second == 0) ? "land" : "water");
         }
         cout << endl;
     }
-    cout << endl << "-------------------------------------------------" << endl;
-    cout << endl;
-    cout << "Continents: " << endl;
-    vector<continent>::iterator w;
-    for (w = continents->begin(); w !=continents->end(); ++w) {
-        cout << *(w->first)->name << endl;
-        cout << "    Countries: ";
-        vector<Country*>::iterator t;
-        for (t = (w->second).begin(); t !=(w->second).end(); ++t) {
-            cout << " " << *((*t)->name);
-        }
-        cout << endl << endl;
-    }
-    cout << endl << "-------------------------------------------------" << endl;
+    cout << "-------------------------------------------------\n\n";
 }
 
 bool Map::isValid()

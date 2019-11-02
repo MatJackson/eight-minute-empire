@@ -31,7 +31,7 @@ public:
     bool playAction(Action& action);
     bool AndOrAction(Card::CombinationType type, vector<Action> actions);
     bool PayCoin(int coins);
-    bool PlaceNewArmies(int armiesNum, Country *country);
+    bool PlaceNewArmies(int armiesNum, Country *country, bool forceAdd);
     bool MoveArmies(int armiesNum, Country *to, Country *from);
     bool MoveOverLand(int armiesNum, Country *to, Country *from);
     bool MoveOverWater(int armiesNum, Country *to, Country *from);

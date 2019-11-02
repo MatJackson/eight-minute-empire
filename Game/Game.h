@@ -16,8 +16,9 @@ public:
     vector<Player*> *players;
     Map* map;
     Deck* deck;
-    Hand* hand;
+    Player* non_player; //optional - only if 2 players in the game
     Player* startingPlayer;
+    Hand* hand;
     int *maxCardCount;
 
     Game();

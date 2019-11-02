@@ -6,6 +6,7 @@
 #include <limits>
 #include "Player.h"
 #include "../Maps/Map.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -86,7 +87,7 @@ bool Player::playAction(Action& action) {
                         break;
                     }
                 }
-                success = PlaceNewArmies(armiesNum, country);
+                success = PlaceNewArmies(armiesNum, country, false);
                 if (success) {
                     count -= armiesNum;
                 }
@@ -222,20 +223,23 @@ bool Player::PayCoin(int coins) {
     }
 }
 
-bool Player::PlaceNewArmies(int armiesNum, Country *country) {
-    if(*armies < armiesNum) {
-        cout << "Player does not have enough armies to place." << endl;
-        return false;
-    }
-    countryValue *cityIn = getCitiesInCountry(country);
-    if (cityIn->first == country) {
-        if (cityIn->second <= 0 && country!=map->startingRegion) {
-            cout << "Player does not have cities in that country. Cannot place armies." << endl;
+bool Player::PlaceNewArmies(int armiesNum, Country *country, bool forceAdd) {
+
+    if (!forceAdd) {
+        if (*armies < armiesNum) {
+            cout << "Player does not have enough armies to place." << endl;
             return false;
         }
+        countryValue *cityIn = getCitiesInCountry(country);
+        if (cityIn->first == country) {
+            if (cityIn->second <= 0 && country != map->startingRegion) {
+                cout << "Player does not have cities in that country. Cannot place armies." << endl;
+                return false;
+            }
+        }
+        *armies -= armiesNum;
     }
 
-    *armies -= armiesNum;
     countryValue *armyIn = getArmiesInCountry(country);
     armyIn->second+=armiesNum;
 
@@ -343,21 +347,21 @@ bool Player::Ignore() {
 }
 
 void Player::display() {
-    cout << "》" << *name << endl;
-    cout << "》 Number of disks left: " << *disks << endl;
-    cout << "》 Number of token left: " << *tokens << endl;
-    cout << "》 Number of armies left: " << *armies << endl;
-    cout << "》 Armies in: " << endl;
+    cout << "\n----------- " << *name << " ---------------------------------" << endl;
+    cout << left <<  setw(10) << "Disks: " << *disks << endl;
+    cout << left <<  setw(10) << "Tokens: " << *tokens << endl;
+    cout << left <<  setw(10) << "Armies: " << *armies << endl;
+    cout << "\nArmies in:\t";
     vector<countryValue>::iterator i;
     for (i = (armiesIn)->begin(); i !=(armiesIn)->end(); ++i) {
-        cout << "》   " << *(i->first->name) << ": " << i->second << endl;
+        cout << "\t" << *(i->first->name) << ": " << i->second;
     }
-    cout << "》 Cities in: " << endl;
+    cout << "\nCities in:\t";
     vector<countryValue>::iterator t;
     for (t = (citiesIn)->begin(); t !=(citiesIn)->end(); ++t) {
-        cout << "》   " << *(t->first->name) << ": " << t->second << endl;
+        cout << "\t" << *(t->first->name) << ": " << t->second;
     }
-    cout << endl;
+    cout << "\n\n" << endl;
 }
 
 pair<Country*, int>* Player::getArmiesInCountry(Country *country) {
