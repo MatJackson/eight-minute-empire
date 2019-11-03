@@ -27,9 +27,6 @@ public:
     vector<countryValue> *armiesIn;
 
     Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
-    bool playCard(Card &card);
-    bool playAction(Action& action);
-    bool AndOrAction(Card::CombinationType type, vector<Action> actions);
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country, bool forceAdd);
     bool MoveArmies(int armiesNum, Country *to, Country *from);
