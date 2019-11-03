@@ -33,6 +33,7 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
     hand = new vector<Card*>;
 
     age = new int(0);
+    score = new Score();
 
 }
 
@@ -46,6 +47,10 @@ bool Player::PayCoin(int coins) {
         *tokens-=coins;
         return true;
     }
+}
+
+int Score::getTotalScore() {
+    return *continentScore + *regionScore + *goodScore;
 }
 
 bool Player::PlaceNewArmies(int armiesNum, Country *country, bool forceAdd) {

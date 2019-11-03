@@ -30,6 +30,7 @@ public:
     bool playAction(Action& action, Player& player);
     bool AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player);
     Player* findPlayerByName(string playerName);
+    void computeScore();
 };
 
 

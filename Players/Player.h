@@ -11,6 +11,14 @@
 
 using namespace std;
 
+struct Score {
+    int *continentScore;
+    int *regionScore;
+    int *goodScore;
+
+    int getTotalScore();
+};
+
 class Player {
 
 public:
@@ -21,6 +29,7 @@ public:
     int *tokens;
     int *armies;
     int *age;
+    Score *score;
     BiddingFacility *bidding;
     vector<Card*> *hand;
     vector<countryValue> *citiesIn;

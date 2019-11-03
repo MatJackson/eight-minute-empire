@@ -436,3 +436,54 @@ Player* Game::findPlayerByName(string playerName) {
 
     return nullptr;
 }
+
+void Game::computeScore() {
+
+    for (auto continent : *map->continents) {
+        vector<int> continentControlCount(players->size());
+        Player *continentOwner = nullptr;
+
+        for (auto country : continent.second) {
+            Player *countryOwner = nullptr;
+            int highestControlCount = 0;
+
+            for (auto player : *players) {
+                int playerControlCount = player->getArmiesInCountry(country)->second + player->getCitiesInCountry(country)->second;
+
+                if (playerControlCount > highestControlCount) {
+                    highestControlCount = playerControlCount;
+                    countryOwner = player;
+                } else if (playerControlCount == highestControlCount) {
+                    countryOwner = nullptr;
+                }
+            }
+
+            if (countryOwner != nullptr) {
+                countryOwner->score->regionScore++;
+
+                int playerIndex = 0;
+                for (auto player : *players) {
+                    if (countryOwner == player) {
+                        continentControlCount.at(playerIndex)++;
+                    }
+                    playerIndex++;
+                }
+            }
+
+        }
+
+        int highestContinentControlCount = 0;
+        for (int i = 0; i < continentControlCount.size(); i++) {
+            if (continentControlCount.at(i) > highestContinentControlCount) {
+                highestContinentControlCount = continentControlCount.at(i);
+                continentOwner = players->at(i);
+            } else if (continentControlCount.at(i) == highestContinentControlCount) {
+                continentOwner = nullptr;
+            }
+        }
+
+        if (continentOwner != nullptr) {
+            continentOwner->score->continentScore++;
+        }
+    }
+}
