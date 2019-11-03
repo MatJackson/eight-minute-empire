@@ -269,13 +269,13 @@ void Player::printGoods() {
         }
     }
 
-    cout << "You have the following goods:" << endl;
-    cout << "Ruby: " << ruby << endl;
-    cout << "Wood: " << wood << endl;
-    cout << "Carrot: " << carrot << endl;
-    cout << "Anvil: " << anvil << endl;
-    cout << "Ore: " << ore << endl;
-    cout << "Wild: " << wild << endl;
+    cout << "\tYou have the following goods:" << endl;
+    cout << "\tRuby: " << ruby << endl;
+    cout << "\tWood: " << wood << endl;
+    cout << "\tCarrot: " << carrot << endl;
+    cout << "\tAnvil: " << anvil << endl;
+    cout << "\tOre: " << ore << endl;
+    cout << "\tWild: " << wild << endl;
 
 
 }
@@ -312,7 +312,8 @@ void Player::computeTotalGoodScore() {
     }
 
     if (wild > 0) {
-        cout << "You have " << wild << "wildcards, please assign your wildcards" << endl;
+        cout << endl;
+        cout << *name << ", You have " << wild << " wildcards, please assign your wildcards" << endl;
         cout << "Goodlist: ruby, wood, carrot, anvil, ore" << endl;
         while (wild > 0) {
             string good;
@@ -350,16 +351,16 @@ void Player::computeTotalGoodScore() {
         case 0:
             break;
         case 1:
-            score->goodScore += 1;
+            (*score->goodScore) += 1;
             break;
         case 2:
-            score->goodScore += 2;
+            (*score->goodScore) += 2;
             break;
         case 3:
-            score->goodScore += 3;
+            (*score->goodScore) += 3;
             break;
         default: // default handle cases where ruby > 3
-            score->goodScore += 6;
+            (*score->goodScore) += 6;
     }
 
     switch (wood) {
@@ -367,17 +368,17 @@ void Player::computeTotalGoodScore() {
             break;
         case 1:
         case 2:
-            score->goodScore += 1;
+            (*score->goodScore) += 1;
             break;
         case 3:
         case 4:
-            score->goodScore += 2;
+            (*score->goodScore) += 2;
             break;
         case 5:
-            score->goodScore += 3;
+            (*score->goodScore) += 3;
             break;
         default: // default handle cases where wood > 5
-            score->goodScore += 6;
+            (*score->goodScore) += 6;
 
     }
 
@@ -387,18 +388,18 @@ void Player::computeTotalGoodScore() {
         case 1:
         case 2:
         case 3:
-            score->goodScore += 1;
+            (*score->goodScore) += 1;
             break;
         case 4:
         case 5:
-            score->goodScore += 2;
+            (*score->goodScore) += 2;
             break;
         case 6:
         case 7:
-            score->goodScore += 3;
+            (*score->goodScore) += 3;
             break;
         default: // default handle cases where carrot > 7
-            score->goodScore += 6;
+            (*score->goodScore) += 6;
 
     }
 
@@ -407,18 +408,18 @@ void Player::computeTotalGoodScore() {
             break;
         case 1:
         case 2:
-            score->goodScore += 1;
+            (*score->goodScore) += 1;
             break;
         case 3:
         case 4:
-            score->goodScore += 2;
+            (*score->goodScore) += 2;
             break;
         case 5:
         case 6:
-            score->goodScore += 3;
+            (*score->goodScore) += 3;
             break;
         default: // default handle cases where anvil > 6
-            score->goodScore += 6;
+            (*score->goodScore) += 6;
     }
 
     switch (ore) {
@@ -426,16 +427,16 @@ void Player::computeTotalGoodScore() {
             break;
         case 1:
         case 2:
-            score->goodScore += 1;
+            (*score->goodScore) += 1;
             break;
         case 3:
-            score->goodScore += 2;
+            (*score->goodScore) += 2;
             break;
         case 4:
-            score->goodScore += 3;
+            (*score->goodScore) += 3;
             break;
         default: // default handle cases where ore > 5
-            score->goodScore += 6;
+            (*score->goodScore) += 6;
     }
 }
 
