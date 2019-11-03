@@ -487,6 +487,10 @@ void Game::computeScore() {
         }
     }
 
+    for (auto player : *players) {
+        player->computeTotalGoodScore();
+    }
+
     printScores();
 }
 

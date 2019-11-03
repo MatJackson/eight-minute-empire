@@ -238,3 +238,204 @@ void Player::setArmies(int army) {
     *armies = army;
 }
 
+void Player::printGoods() {
+    int ruby = 0;
+    int wood = 0;
+    int carrot = 0;
+    int anvil = 0;
+    int ore = 0;
+    int wild = 0;
+
+    for (auto card : *hand) {
+        switch (card->good.type) {
+            case Good::GoodType::GOOD_RUBY :
+                ruby += card->good.count;
+                break;
+            case Good::GoodType::GOOD_WOOD :
+                wood += card->good.count;
+                break;
+            case Good::GoodType::GOOD_CARROT :
+                carrot += card->good.count;
+                break;
+            case Good::GoodType::GOOD_ANVIL :
+                anvil += card->good.count;
+                break;
+            case Good::GoodType::GOOD_ORE :
+                ore += card->good.count;
+                break;
+            case Good::GoodType::GOOD_WILD :
+                wild += card->good.count;
+                break;
+        }
+    }
+
+    cout << "You have the following goods:" << endl;
+    cout << "Ruby: " << ruby << endl;
+    cout << "Wood: " << wood << endl;
+    cout << "Carrot: " << carrot << endl;
+    cout << "Anvil: " << anvil << endl;
+    cout << "Ore: " << ore << endl;
+    cout << "Wild: " << wild << endl;
+
+
+}
+
+void Player::computeTotalGoodScore() {
+    int ruby = 0;
+    int wood = 0;
+    int carrot = 0;
+    int anvil = 0;
+    int ore = 0;
+    int wild = 0;
+
+    for (auto card : *hand) {
+        switch (card->good.type) {
+            case Good::GoodType::GOOD_RUBY :
+                ruby += card->good.count;
+                break;
+            case Good::GoodType::GOOD_WOOD :
+                wood += card->good.count;
+                break;
+            case Good::GoodType::GOOD_CARROT :
+                carrot += card->good.count;
+                break;
+            case Good::GoodType::GOOD_ANVIL :
+                anvil += card->good.count;
+                break;
+            case Good::GoodType::GOOD_ORE :
+                ore += card->good.count;
+                break;
+            case Good::GoodType::GOOD_WILD :
+                wild += card->good.count;
+                break;
+        }
+    }
+
+    if (wild > 0) {
+        cout << "You have " << wild << "wildcards, please assign your wildcards" << endl;
+        cout << "Goodlist: ruby, wood, carrot, anvil, ore" << endl;
+        while (wild > 0) {
+            string good;
+            cout << "Enter a good type: ";
+            cin >> good;
+
+            if (good == "ruby") {
+                ruby++;
+                wild--;
+            }
+
+            if (good == "wood") {
+                wood++;
+                wild--;
+            }
+
+            if (good == "carrot") {
+                carrot++;
+                wild--;
+            }
+
+            if (good == "anvil") {
+                anvil++;
+                wild--;
+            }
+
+            if (good == "ore") {
+                ore++;
+                wild--;
+            }
+        }
+    }
+
+    switch (ruby) {
+        case 0:
+            break;
+        case 1:
+            score->goodScore += 1;
+            break;
+        case 2:
+            score->goodScore += 2;
+            break;
+        case 3:
+            score->goodScore += 3;
+            break;
+        default: // default handle cases where ruby > 3
+            score->goodScore += 6;
+    }
+
+    switch (wood) {
+        case 0:
+            break;
+        case 1:
+        case 2:
+            score->goodScore += 1;
+            break;
+        case 3:
+        case 4:
+            score->goodScore += 2;
+            break;
+        case 5:
+            score->goodScore += 3;
+            break;
+        default: // default handle cases where wood > 5
+            score->goodScore += 6;
+
+    }
+
+    switch (carrot) {
+        case 0:
+            break;
+        case 1:
+        case 2:
+        case 3:
+            score->goodScore += 1;
+            break;
+        case 4:
+        case 5:
+            score->goodScore += 2;
+            break;
+        case 6:
+        case 7:
+            score->goodScore += 3;
+            break;
+        default: // default handle cases where carrot > 7
+            score->goodScore += 6;
+
+    }
+
+    switch (anvil) {
+        case 0:
+            break;
+        case 1:
+        case 2:
+            score->goodScore += 1;
+            break;
+        case 3:
+        case 4:
+            score->goodScore += 2;
+            break;
+        case 5:
+        case 6:
+            score->goodScore += 3;
+            break;
+        default: // default handle cases where anvil > 6
+            score->goodScore += 6;
+    }
+
+    switch (ore) {
+        case 0:
+            break;
+        case 1:
+        case 2:
+            score->goodScore += 1;
+            break;
+        case 3:
+            score->goodScore += 2;
+            break;
+        case 4:
+            score->goodScore += 3;
+            break;
+        default: // default handle cases where ore > 5
+            score->goodScore += 6;
+    }
+}
+

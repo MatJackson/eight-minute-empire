@@ -51,6 +51,8 @@ public:
     void setDisks(int disk);
     void setTokens(int token);
     void setArmies(int army);
+    void printGoods();
+    void computeTotalGoodScore();
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_PLAYER_H
