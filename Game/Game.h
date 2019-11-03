@@ -31,6 +31,7 @@ public:
     bool AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player);
     Player* findPlayerByName(string playerName);
     void computeScore();
+    void printScores();
 };
 
 

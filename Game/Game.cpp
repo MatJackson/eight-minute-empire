@@ -459,7 +459,7 @@ void Game::computeScore() {
             }
 
             if (countryOwner != nullptr) {
-                countryOwner->score->regionScore++;
+                (*countryOwner->score->regionScore)++;
 
                 int playerIndex = 0;
                 for (auto player : *players) {
@@ -483,7 +483,26 @@ void Game::computeScore() {
         }
 
         if (continentOwner != nullptr) {
-            continentOwner->score->continentScore++;
+            (*continentOwner->score->continentScore)++;
         }
     }
+
+    printScores();
+}
+
+void Game::printScores() {
+    cout << endl;
+    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
+
+    int playerNumber = 1;
+    for (auto player : *players) {
+        printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
+                *player->score->continentScore,
+                *player->score->regionScore,
+                *player->score->goodScore,
+                player->score->getTotalScore()
+        );
+        playerNumber++;
+    }
+
 }

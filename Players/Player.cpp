@@ -34,6 +34,9 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
 
     age = new int(0);
     score = new Score();
+    score->continentScore = new int(0);
+    score->regionScore = new int(0);
+    score->goodScore = new int(0);
 
 }
 
