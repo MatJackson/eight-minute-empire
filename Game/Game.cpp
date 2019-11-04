@@ -114,7 +114,7 @@ int Game::startup()
     switch(playerNum)
     {
         case 2:
-            maxCardCount = new int(2);
+            maxCardCount = new int(13);
             coinsPerPlayer = 14;
             break;
         case 3:
@@ -181,10 +181,13 @@ void Game::takeTurn(Player *player) {
     int indexOfCardToExchange;
 
     // Select a card
+    cout << "\n\n\n" << endl;
+    printScoreCard();
     hand->printHand();
     cout << *player->name << ": Coins = " << *player->tokens << endl;
+    player->printGoods();
     while (selectedCard == nullptr) {
-        cout << "Please select the index [0-5] of the card you wish to exchange:";
+        cout << *player->name << ", please select the index [0-5] of the card you wish to exchange:";
         cin >> indexOfCardToExchange;
 
         if (cin.fail() || indexOfCardToExchange < 0 || indexOfCardToExchange > 5) {
@@ -435,4 +438,117 @@ Player* Game::findPlayerByName(string playerName) {
     }
 
     return nullptr;
+}
+
+void Game::printScoreCard() {
+    cout << "Good Score Card: required good count to achieve given scores" << endl;
+    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Good Type", "Score: 1", "Score: 2", "Score: 3", "Score: 6");
+    printf("\t|%-15s|%10d|%10d|%10d|%10d|\n", "Ruby", 1, 2, 3, 4);
+    printf("\t|%-15s|%10d|%10d|%10d|%10d|\n", "Ore", 2, 3, 4, 5);
+    printf("\t|%-15s|%10d|%10d|%10d|%10d|\n", "Wood", 2, 4, 5, 6);
+    printf("\t|%-15s|%10d|%10d|%10d|%10d|\n", "Anvil", 2, 4, 6, 7);
+    printf("\t|%-15s|%10d|%10d|%10d|%10d|\n", "Carrot", 3, 5, 7, 8);
+
+}
+
+void Game::computeScore() {
+
+    for (auto continent : *map->continents) {
+        vector<int> continentControlCount(players->size());
+        Player *continentOwner = nullptr;
+
+        for (auto country : continent.second) {
+            Player *countryOwner = nullptr;
+            int highestControlCount = 0;
+
+            for (auto player : *players) {
+                int playerControlCount = player->getArmiesInCountry(country)->second + player->getCitiesInCountry(country)->second;
+
+                if (playerControlCount > highestControlCount) {
+                    highestControlCount = playerControlCount;
+                    countryOwner = player;
+                } else if (playerControlCount == highestControlCount) {
+                    countryOwner = nullptr;
+                }
+            }
+
+            if (countryOwner != nullptr) {
+                (*countryOwner->score->regionScore)++;
+
+                int playerIndex = 0;
+                for (auto player : *players) {
+                    if (countryOwner == player) {
+                        continentControlCount.at(playerIndex)++;
+                    }
+                    playerIndex++;
+                }
+            }
+
+        }
+
+        int highestContinentControlCount = 0;
+        for (int i = 0; i < continentControlCount.size(); i++) {
+            if (continentControlCount.at(i) > highestContinentControlCount) {
+                highestContinentControlCount = continentControlCount.at(i);
+                continentOwner = players->at(i);
+            } else if (continentControlCount.at(i) == highestContinentControlCount) {
+                continentOwner = nullptr;
+            }
+        }
+
+        if (continentOwner != nullptr) {
+            (*continentOwner->score->continentScore)++;
+        }
+    }
+
+    printScoreCard();
+    cout << "\n\n\nFinal Spread of goods:" << endl;
+    for (auto player : *players) {
+        cout << *(player->name) << ":" << endl;
+        player->printGoods();
+    }
+
+    for (auto player : *players) {
+        player->computeTotalGoodScore();
+        cout << endl;
+    }
+
+    printScores();
+
+    cout << "\n\nWinner Is:" << endl;
+
+    int highestScore = 0;
+
+    for (auto player : *players) {
+        if (player->score->getTotalScore() > highestScore) {
+            highestScore = player->score->getTotalScore();
+        }
+    }
+
+    vector<Player> winners;
+    for (auto player : *players) {
+        if (player->score->getTotalScore() == highestScore) {
+            winners.push_back(*player);
+        }
+    }
+
+    for (auto winner : winners) {
+        cout << *(winner.name) << endl;
+    }
+}
+
+void Game::printScores() {
+
+    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
+    int playerNumber = 1;
+    for (auto player : *players) {
+        printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
+                *player->score->continentScore,
+                *player->score->regionScore,
+                *player->score->goodScore,
+                player->score->getTotalScore()
+        );
+        playerNumber++;
+    }
+
 }

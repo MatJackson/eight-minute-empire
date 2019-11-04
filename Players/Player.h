@@ -11,6 +11,14 @@
 
 using namespace std;
 
+struct Score {
+    int *continentScore;
+    int *regionScore;
+    int *goodScore;
+
+    int getTotalScore();
+};
+
 class Player {
 
 public:
@@ -21,6 +29,7 @@ public:
     int *tokens;
     int *armies;
     int *age;
+    Score *score;
     BiddingFacility *bidding;
     vector<Card*> *hand;
     vector<countryValue> *citiesIn;
@@ -42,6 +51,8 @@ public:
     void setDisks(int disk);
     void setTokens(int token);
     void setArmies(int army);
+    void printGoods();
+    void computeTotalGoodScore();
 };
 
 #endif //EIGHT_MINUTE_EMPIRE_PLAYER_H
