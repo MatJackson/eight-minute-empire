@@ -19,3 +19,29 @@ int HumanStrategy::pickCard(Hand *hand) {
         }
     }
 }
+
+int GreedyComputerStrategy::pickCard(Hand *hand) {
+    for(int c = 0; c < 6; c++) {
+        vector<Action>::iterator a;
+        for (a = (hand->cards[c]->actions).begin(); a !=(hand->cards[c]->actions).end(); ++a) {
+            if (a->type == 3 || a->type == 4) {
+                return c;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int ModerateComputerStrategy::pickCard(Hand *hand) {
+    for(int c = 0; c < 6; c++) {
+        vector<Action>::iterator a;
+        for (a = (hand->cards[c]->actions).begin(); a !=(hand->cards[c]->actions).end(); ++a) {
+            if (a->type == 0 || a->type == 1 || a->type == 2) {
+                return c;
+            }
+        }
+    }
+
+    return 0;
+}
