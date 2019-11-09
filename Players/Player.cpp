@@ -38,6 +38,16 @@ Player::Player(Map *map, string playerName, int diskNum, int tokenNum, int armyN
     score->regionScore = new int(0);
     score->goodScore = new int(0);
 
+    setStrategy(new HumanStrategy());
+
+}
+
+void Player::setStrategy(PlayerStrategy* playerStrategy) {
+    strategy = playerStrategy;
+}
+
+int Player::pickCard(Hand *hand) {
+    return (strategy->pickCard(hand));
 }
 
 bool Player::PayCoin(int coins) {

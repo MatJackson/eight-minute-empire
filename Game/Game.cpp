@@ -186,17 +186,10 @@ void Game::takeTurn(Player *player) {
     hand->printHand();
     cout << *player->name << ": Coins = " << *player->tokens << endl;
     player->printGoods();
-    while (selectedCard == nullptr) {
-        cout << *player->name << ", please select the index [0-5] of the card you wish to exchange:";
-        cin >> indexOfCardToExchange;
 
-        if (cin.fail() || indexOfCardToExchange < 0 || indexOfCardToExchange > 5) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            selectedCard = nullptr;
-        } else {
-            selectedCard = hand->exchange(indexOfCardToExchange, player->tokens);
-        }
+    while (!selectedCard) {
+        indexOfCardToExchange = player->pickCard(hand);
+        selectedCard = hand->exchange(indexOfCardToExchange, player->tokens);
     }
 
     // Add the card to the player hand
