@@ -180,8 +180,10 @@ void Game::takeTurn(Player *player) {
     Card *selectedCard = nullptr;
     int indexOfCardToExchange;
 
-    // Select a card
     cout << "\n\n\n" << endl;
+    cout << "------------------------ " << *(player->name) << "'s turn! ------------------------\n" << endl;
+
+    // Select a card
     printScoreCard();
     hand->printHand();
     cout << *player->name << ": Coins = " << *player->tokens << endl;
@@ -434,7 +436,10 @@ bool Game::playAction(Action& action, Player& player) {
                             country = map->findCountry(countryName);
                         }
                     } else {
-                        playerToDestroy = findPlayerByName("Player1");
+                        playerToDestroy = players->front();
+                        if (playerToDestroy->name == player.name) {
+                            playerToDestroy = players->at(1);
+                        }
                         for (auto countryToDestroy : *(playerToDestroy->armiesIn)) {
                             if (countryToDestroy.second > 0) {
                                 country = countryToDestroy.first;
