@@ -12,13 +12,14 @@
 
 using namespace std;
 
-class Game  { //concrete subject
+class Game : public Subject { //concrete subject
 public:
     vector<Player*> *players;
     Map* map;
     Deck* deck;
     Player* non_player; //optional - only if 2 players in the game
-    Player* startingPlayer;
+    Player* activePlayer;
+    Card *selectedCard;
     Hand* hand;
     int *maxCardCount;
     string state;
