@@ -9,9 +9,43 @@
 
 int playerNum;
 
+StateChange::StateChange() {
+
+};
+
+StateChange::StateChange(Game* s) {
+    subject = s;
+    subject->Attach(this);
+};
+
+void StateChange::Update() {
+    display();
+};
+void StateChange::display() {
+    if (subject->state == "start") {
+        cout << "start";
+    }
+
+    if (subject->state == "start turn") {
+        cout << "hi";
+    }
+
+    if (subject->state == "select card") {
+        cout << "hiii";
+    }
+
+    if (subject->state == "play card") {
+        cout << "hiiiiiii";
+    }
+};
+
 Game::Game()
 {
+}
 
+void Game::changeState(string change) {
+    state = change;
+    Notify();
 }
 
 int Game::initialize()
@@ -180,6 +214,8 @@ void Game::takeTurn(Player *player) {
     Card *selectedCard = nullptr;
     int indexOfCardToExchange;
 
+    changeState("start turn");
+
     cout << "\n\n\n" << endl;
     cout << "------------------------ " << *(player->name) << "'s turn! ------------------------\n" << endl;
 
@@ -188,6 +224,8 @@ void Game::takeTurn(Player *player) {
     hand->printHand();
     cout << *player->name << ": Coins = " << *player->tokens << endl;
     player->printGoods();
+
+    changeState("select card");
 
     while (!selectedCard) {
         indexOfCardToExchange = player->pickCard(hand);
@@ -201,6 +239,8 @@ void Game::takeTurn(Player *player) {
     cout << endl;
     cout << "You have selectedCard:" << endl;
     selectedCard->printCard();
+
+    changeState("play card");
 
     // play the selected card
     player->display();
