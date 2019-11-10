@@ -49,5 +49,15 @@ private:
     Game *subject;
 };
 
+class ScoreChange : public Observer { //concrete observer
+public:
+    ScoreChange();
+    ScoreChange(Game* s);
+    void Update();
+    void display();
+private:
+    Game *subject;
+};
+
 
 #endif //EIGHT_MINUTE_EMPIRE_GAME_H

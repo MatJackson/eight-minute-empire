@@ -12,6 +12,7 @@ int main() {
     Game* game = new Game( );
 
     StateChange stateChange = StateChange(game);
+    ScoreChange scoreChange = ScoreChange(game);
 
     game->initialize();
 

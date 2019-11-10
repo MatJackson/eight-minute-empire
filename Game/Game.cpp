@@ -44,6 +44,24 @@ void StateChange::display() {
     }
 };
 
+ScoreChange::ScoreChange() {
+
+};
+
+ScoreChange::ScoreChange(Game* s) {
+    subject = s;
+    subject->Attach(this);
+};
+
+void ScoreChange::Update() {
+    display();
+};
+void ScoreChange::display() {
+    if (subject->state == "display score") {
+        subject->printScores();
+    }
+};
+
 // GAME
 
 Game::Game()
@@ -233,11 +251,14 @@ void Game::takeTurn(Player *player) {
     player->hand->push_back(selectedCard);
 
     changeState("select card");
+    changeState("select card");
 
     changeState("play card");
 
     playCard(*selectedCard, *player);
     cout << endl; // breakpoint line.
+
+    changeState("display score");
 }
 
 void Game::mainGameLoop() {
@@ -564,6 +585,32 @@ void Game::printScoreCard() {
 
 void Game::computeScore() {
 
+    printScores();
+
+    cout << "\n\nWinner Is:" << endl;
+
+    int highestScore = 0;
+
+    for (auto player : *players) {
+        if (player->score->getTotalScore() > highestScore) {
+            highestScore = player->score->getTotalScore();
+        }
+    }
+
+    vector<Player> winners;
+    for (auto player : *players) {
+        if (player->score->getTotalScore() == highestScore) {
+            winners.push_back(*player);
+        }
+    }
+
+    for (auto winner : winners) {
+        cout << *(winner.name) << endl;
+    }
+}
+
+void Game::printScores() {
+
     for (auto continent : *map->continents) {
         vector<int> continentControlCount(players->size());
         Player *continentOwner = nullptr;
@@ -613,42 +660,11 @@ void Game::computeScore() {
     }
 
     printScoreCard();
-    cout << "\n\n\nFinal Spread of goods:" << endl;
-    for (auto player : *players) {
-        cout << *(player->name) << ":" << endl;
-        player->printGoods();
-    }
 
     for (auto player : *players) {
         player->computeTotalGoodScore();
         cout << endl;
     }
-
-    printScores();
-
-    cout << "\n\nWinner Is:" << endl;
-
-    int highestScore = 0;
-
-    for (auto player : *players) {
-        if (player->score->getTotalScore() > highestScore) {
-            highestScore = player->score->getTotalScore();
-        }
-    }
-
-    vector<Player> winners;
-    for (auto player : *players) {
-        if (player->score->getTotalScore() == highestScore) {
-            winners.push_back(*player);
-        }
-    }
-
-    for (auto winner : winners) {
-        cout << *(winner.name) << endl;
-    }
-}
-
-void Game::printScores() {
 
     printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
     int playerNumber = 1;
