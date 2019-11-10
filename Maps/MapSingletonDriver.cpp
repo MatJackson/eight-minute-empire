@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include "Map.h"
-#include "../Players/Player.h"
 
 using namespace std;
 
