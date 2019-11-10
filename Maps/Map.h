@@ -27,6 +27,7 @@ struct Country {
 
 class Map {
 public:
+    static Map* mapInstance;
     typedef pair<Country*, bool> adjacency;
     typedef pair<Country*, vector<adjacency>> country;
     typedef pair<Continent*, vector<Country*>> continent;
@@ -35,6 +36,7 @@ public:
     Country* startingRegion;
 
     Map();
+    static Map* getInstance();
     void addCountry(Country *country);
     bool addAdjacency(Country *from, Country *to, bool type);
     int isAdjacent(Country *from, Country *to);

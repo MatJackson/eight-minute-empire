@@ -16,6 +16,13 @@ Map::Map()
     startingRegion = nullptr;
 }
 
+Map* Map::getInstance()
+{
+    if (!mapInstance)
+        mapInstance = new Map();
+    return mapInstance;
+}
+
 void Map::addCountry(Country *country)
 {
     vector<adjacency> init = vector<adjacency>();
@@ -201,3 +208,5 @@ bool Map::isContinentsConnected()
     cout << "Continents are connected." << endl;
     return true;
 }
+
+Map *Map::mapInstance = 0;

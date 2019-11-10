@@ -24,5 +24,6 @@ add_executable(
 #        Game/GameDriver.cpp
         Players/PlayerStrategies.cpp
         Players/PlayerStrategies.h
-        Players/PlayerStrategiesDriver.cpp
+#        Players/PlayerStrategiesDriver.cpp
+        Maps/MapSingletonDriver.cpp
 )
