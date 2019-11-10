@@ -9,9 +9,51 @@
 
 int playerNum;
 
+StateChange::StateChange() {
+
+};
+
+StateChange::StateChange(Game* s) {
+    subject = s;
+    subject->Attach(this);
+};
+
+void StateChange::Update() {
+    display();
+};
+void StateChange::display() {
+    if (subject->state == "start turn") {
+        cout << "\n\n\n" << endl;
+        cout << "------------------------ " << *(subject->activePlayer->name) << "'s turn! ------------------------\n" << endl;
+
+        // Select a card
+        subject->printScoreCard();
+        subject->hand->printHand();
+        cout << *subject->activePlayer->name << ": Coins = " << *subject->activePlayer->tokens << endl;
+        subject->activePlayer->printGoods();
+    }
+
+    if (subject->state == "select card") {
+        cout << endl;
+        cout << "You have selectedCard:" << endl;
+        subject->selectedCard->printCard();
+    }
+
+    if (subject->state == "play card") {
+        subject->activePlayer->display();
+    }
+};
+
+// GAME
+
 Game::Game()
 {
 
+}
+
+void Game::changeState(string change) {
+    state = change;
+    Notify();
 }
 
 int Game::initialize()
@@ -163,7 +205,7 @@ int Game::startup()
         }
     }
     winningBidder->payBid();
-    startingPlayer = winner;
+    activePlayer = winner;
     cout << "Winner is: " << *(winner->name) << endl;
     cout << "State After Paying Bid:" << endl;
     printf("\t|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
@@ -177,17 +219,10 @@ int Game::startup()
 }
 
 void Game::takeTurn(Player *player) {
-    Card *selectedCard = nullptr;
+    selectedCard = nullptr;
     int indexOfCardToExchange;
 
-    cout << "\n\n\n" << endl;
-    cout << "------------------------ " << *(player->name) << "'s turn! ------------------------\n" << endl;
-
-    // Select a card
-    printScoreCard();
-    hand->printHand();
-    cout << *player->name << ": Coins = " << *player->tokens << endl;
-    player->printGoods();
+    changeState("start turn");
 
     while (!selectedCard) {
         indexOfCardToExchange = player->pickCard(hand);
@@ -197,13 +232,10 @@ void Game::takeTurn(Player *player) {
     // Add the card to the player hand
     player->hand->push_back(selectedCard);
 
-    // Display the selected card
-    cout << endl;
-    cout << "You have selectedCard:" << endl;
-    selectedCard->printCard();
+    changeState("select card");
 
-    // play the selected card
-    player->display();
+    changeState("play card");
+
     playCard(*selectedCard, *player);
     cout << endl; // breakpoint line.
 }
@@ -215,7 +247,7 @@ void Game::mainGameLoop() {
 
     // get index of starting player
     for (auto player : *players) {
-        if (startingPlayer == player) {
+        if (activePlayer == player) {
             break;
         } else {
             indexOfActivePlayer++;
@@ -223,7 +255,8 @@ void Game::mainGameLoop() {
     }
 
     while (!gameOver) {
-        takeTurn(players->at(indexOfActivePlayer));
+        activePlayer = players->at(indexOfActivePlayer);
+        takeTurn(activePlayer);
 
         indexOfActivePlayer = (indexOfActivePlayer + 1) % playerCount;
         gameOver = players->at(indexOfActivePlayer)->hand->size() == *maxCardCount;

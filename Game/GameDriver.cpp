@@ -11,6 +11,8 @@ int main() {
 
     Game* game = new Game( );
 
+    StateChange stateChange = StateChange(game);
+
     game->initialize();
 
     game->startup();

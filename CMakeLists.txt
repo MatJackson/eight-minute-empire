@@ -21,9 +21,11 @@ add_executable(
 #        Bidding/BiddingFacilityDriver.cpp
         Game/Game.cpp
         Game/Game.h
-#        Game/GameDriver.cpp
+        Game/GameDriver.cpp
         Players/PlayerStrategies.cpp
         Players/PlayerStrategies.h
 #        Players/PlayerStrategiesDriver.cpp
-        Maps/MapSingletonDriver.cpp
+#        Maps/MapSingletonDriver.cpp
+        Game/GameObservers.cpp
+        Game/GameObservers.h
 )

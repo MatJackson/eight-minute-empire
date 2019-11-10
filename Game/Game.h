@@ -8,20 +8,24 @@
 #include "../Maps/Map.h"
 #include "../Maps/MapLoader.h"
 #include "../Players/Player.h"
+#include "GameObservers.h"
 
 using namespace std;
 
-class Game {
+class Game : public Subject { //concrete subject
 public:
     vector<Player*> *players;
     Map* map;
     Deck* deck;
     Player* non_player; //optional - only if 2 players in the game
-    Player* startingPlayer;
+    Player* activePlayer;
+    Card *selectedCard;
     Hand* hand;
     int *maxCardCount;
+    string state;
 
     Game();
+    void changeState(string stateChange);
     int initialize();
     int startup();
     void takeTurn(Player* player);
@@ -33,6 +37,16 @@ public:
     void printScoreCard();
     void computeScore();
     void printScores();
+};
+
+class StateChange : public Observer { //concrete observer
+public:
+    StateChange();
+    StateChange(Game* s);
+    void Update();
+    void display();
+private:
+    Game *subject;
 };
 
 
