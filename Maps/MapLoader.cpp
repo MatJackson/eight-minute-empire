@@ -18,7 +18,7 @@ Map* MapLoader::useFile(string fileName)
     ifstream infile;
     infile.open(fileName);
 
-    Map *map = new Map();
+    Map *map = Map::getInstance();
 
     string line;
     bool countries = false;

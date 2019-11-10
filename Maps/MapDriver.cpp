@@ -9,7 +9,7 @@
 using namespace std;
 
 int main() {
-    Map *map = new Map();
+    Map *map = Map::getInstance();
 
     auto *north = new Continent("North America");
     auto *europe = new Continent("Europe");
