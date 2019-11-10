@@ -45,3 +45,19 @@ int ModerateComputerStrategy::pickCard(Hand *hand) {
 
     return 0;
 }
+
+bool PlayerStrategy::interaction() {
+    return true;
+}
+
+bool HumanStrategy::interaction() {
+    return true;
+}
+
+bool GreedyComputerStrategy::interaction() {
+    return false;
+}
+
+bool ModerateComputerStrategy::interaction() {
+    return false;
+}
