@@ -8,6 +8,7 @@
 #include "../Maps/Map.h"
 #include "../Bidding/BiddingFacility.h"
 #include "../Cards/Cards.h"
+#include "PlayerStrategies.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ class Player {
 public:
     typedef pair<Country*, int> countryValue;
     Map *map;
+    PlayerStrategy* strategy;
     string *name;
     int *disks;
     int *tokens;
@@ -36,6 +38,8 @@ public:
     vector<countryValue> *armiesIn;
 
     Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
+    void setStrategy(PlayerStrategy* strategy);
+    int pickCard(Hand* hand);
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country, bool forceAdd);
     bool MoveArmies(int armiesNum, Country *to, Country *from);

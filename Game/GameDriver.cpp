@@ -11,14 +11,15 @@ int main() {
 
     Game* game = new Game( );
 
+    ScoreView scoreview = ScoreView(game);
+    StateChange stateChange = StateChange(game);
+
     game->initialize();
 
     game->startup();
 
     game->mainGameLoop();
 
-    game->computeScore();
-
-    cout << "break here for debug ending" << endl;
+    game->computeWinner();
 
 }

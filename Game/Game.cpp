@@ -9,9 +9,86 @@
 
 int playerNum;
 
-Game::Game()
-{
+StateChange::StateChange() {
 
+};
+
+StateChange::StateChange(Game* s) {
+    subject = s;
+    subject->Attach(this);
+};
+
+void StateChange::Update() {
+    display();
+};
+void StateChange::display() {
+    if (subject->state == "start turn") {
+        cout << "\n\n\n" << endl;
+        cout << "------------------------ " << *(subject->activePlayer->name) << "'s turn! ------------------------\n" << endl;
+
+        // Select a card
+        //subject->printScoreCard();
+        subject->hand->printHand();
+        cout << *subject->activePlayer->name << ": Coins = " << *subject->activePlayer->tokens << endl;
+        subject->activePlayer->printGoods();
+    }
+
+    if (subject->state == "select card") {
+        cout << endl;
+        cout << "You have selected Card:" << endl;
+        subject->selectedCard->printCard();
+    }
+
+    if (subject->state == "play card") {
+        subject->activePlayer->display();
+    }
+};
+
+ScoreView::ScoreView() {
+
+};
+
+ScoreView::ScoreView(Game* s) {
+    subject = s;
+    subject->Attach(this);
+};
+
+void ScoreView::Update() {
+    display();
+};
+void ScoreView::display() {
+
+    cout << "\n\n------------------------ PLAYERS ------------------------\n" << endl;
+    for (auto player : *subject->players) {
+        player->display();
+        player->printGoods();
+        if(player->hand->size() == *(subject->maxCardCount)) {
+            cout << "\nCONGRATS!!! YOU HAVE THE MAX CARD COUNT!!!!\n";
+        }
+    }
+    cout << "----------------------------------------------------------\n" << endl;
+
+    cout << "\n\n------------------------ CONQUERINGS ------------------------\n" << endl;
+    for (auto continentConquered : *subject->continentsConquered) {
+        cout << *(continentConquered.second->name) << " has conquered the CONTINENT" << *(continentConquered.first->name) << endl;
+    }
+    for (auto countryConquered : *subject->countriesConquered) {
+        cout << *(countryConquered.second->name) << " has conquered " << *(countryConquered.first->name) << endl;
+    }
+    cout << "--------------------------------------------------------\n" << endl;
+};
+
+// GAME
+
+Game::Game() {
+    players = new vector<Player*>;
+    countriesConquered = new vector<pair<Country*, Player*>>;
+    continentsConquered = new vector<pair<Continent*, Player*>>;
+}
+
+void Game::changeState(string change) {
+    state = change;
+    Notify();
 }
 
 int Game::initialize()
@@ -26,9 +103,6 @@ int Game::initialize()
     //initialize deck
     deck = new Deck();
     deck->generateDeck();
-
-    //initialize players
-    players = new vector<Player*>;
 
     while (true) {
         cout << "How many players would like to play? ";
@@ -163,7 +237,7 @@ int Game::startup()
         }
     }
     winningBidder->payBid();
-    startingPlayer = winner;
+    activePlayer = winner;
     cout << "Winner is: " << *(winner->name) << endl;
     cout << "State After Paying Bid:" << endl;
     printf("\t|%-10s|%-5s|%-5s|%-5s|\n", "Player", "Bid", "Coin", "Age");
@@ -177,40 +251,28 @@ int Game::startup()
 }
 
 void Game::takeTurn(Player *player) {
-    Card *selectedCard = nullptr;
+    selectedCard = nullptr;
     int indexOfCardToExchange;
 
-    // Select a card
-    cout << "\n\n\n" << endl;
-    printScoreCard();
-    hand->printHand();
-    cout << *player->name << ": Coins = " << *player->tokens << endl;
-    player->printGoods();
-    while (selectedCard == nullptr) {
-        cout << *player->name << ", please select the index [0-5] of the card you wish to exchange:";
-        cin >> indexOfCardToExchange;
+    changeState("start turn");
 
-        if (cin.fail() || indexOfCardToExchange < 0 || indexOfCardToExchange > 5) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            selectedCard = nullptr;
-        } else {
-            selectedCard = hand->exchange(indexOfCardToExchange, player->tokens);
-        }
+    while (!selectedCard) {
+        indexOfCardToExchange = player->pickCard(hand);
+        selectedCard = hand->exchange(indexOfCardToExchange, player->tokens);
     }
 
     // Add the card to the player hand
     player->hand->push_back(selectedCard);
 
-    // Display the selected card
-    cout << endl;
-    cout << "You have selectedCard:" << endl;
-    selectedCard->printCard();
+    changeState("select card");
+    changeState("select card");
 
-    // play the selected card
-    player->display();
+    changeState("play card");
+
     playCard(*selectedCard, *player);
     cout << endl; // breakpoint line.
+
+    changeState("post turn");
 }
 
 void Game::mainGameLoop() {
@@ -220,7 +282,7 @@ void Game::mainGameLoop() {
 
     // get index of starting player
     for (auto player : *players) {
-        if (startingPlayer == player) {
+        if (activePlayer == player) {
             break;
         } else {
             indexOfActivePlayer++;
@@ -228,7 +290,9 @@ void Game::mainGameLoop() {
     }
 
     while (!gameOver) {
-        takeTurn(players->at(indexOfActivePlayer));
+        activePlayer = players->at(indexOfActivePlayer);
+        takeTurn(activePlayer);
+        isConquered();
 
         indexOfActivePlayer = (indexOfActivePlayer + 1) % playerCount;
         gameOver = players->at(indexOfActivePlayer)->hand->size() == *maxCardCount;
@@ -254,68 +318,95 @@ bool Game::playAction(Action& action, Player& player) {
 
     int count = action.count;
     string countryName;
-    int armiesNum;
+    int armiesNum = 0;
     string playerName;
     bool success;
     string choice;
 
     do {
-
-        cout << "Write 'ignore' to skip or anything else to proceed. ";
-        cin >> choice;
-        if(choice=="ignore"){
-            return player.Ignore();
+        if (player.strategy->interaction()) {
+            cout << "Write 'ignore' to skip or anything else to proceed. ";
+            cin >> choice;
+            if (choice == "ignore") {
+                return player.Ignore();
+            }
         }
 
         switch (action.type) {
             case 0 : {
                 Country *country = nullptr;
-                while (!country) {
-                    cout << "Name country to add armies in: ";
-                    cin >> countryName;
-                    country = map->findCountry(countryName);
-                }
-                while (true) {
-                    cout << "\nHow many armies to add in country? ";
-                    cin >> armiesNum;
-
-                    if (cin.fail() || armiesNum > count || armiesNum <= 0) {
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        cout << "Invalid number." << endl;
-                    } else {
-                        break;
+                if (player.strategy->interaction()) {
+                    while (!country) {
+                        cout << "Name country to add armies in: ";
+                        cin >> countryName;
+                        country = map->findCountry(countryName);
                     }
+                    while (true) {
+                        cout << "\nHow many armies to add in country? ";
+                        cin >> armiesNum;
+
+                        if (cin.fail() || armiesNum > count || armiesNum <= 0) {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Invalid number." << endl;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    country = map->countries->front().first;
+                    armiesNum = count;
                 }
-                success = player.PlaceNewArmies(armiesNum, country, false);
-                if (success) {
-                    count -= armiesNum;
-                }
+                    success = player.PlaceNewArmies(armiesNum, country, false);
+                    if (success) {
+                        count -= armiesNum;
+                    }
+
             }
                 break;
             case 1 : {
-                Country *from = nullptr;
-                while (!from) {
-                    cout << "Name country to move armies from: ";
-                    cin >> countryName;
-                    from = map->findCountry(countryName);
-                }
                 Country *to = nullptr;
-                while (!to) {
-                    cout << "Name country to move armies to: ";
-                    cin >> countryName;
-                    to = map->findCountry(countryName);
-                }
-                while (true) {
-                    cout << "\nHow many armies to move? ";
-                    cin >> armiesNum;
+                Country *from = nullptr;
+                if (player.strategy->interaction()) {
+                    while (!from) {
+                        cout << "Name country to move armies from: ";
+                        cin >> countryName;
+                        from = map->findCountry(countryName);
+                    }
+                    while (!to) {
+                        cout << "Name country to move armies to: ";
+                        cin >> countryName;
+                        to = map->findCountry(countryName);
+                    }
+                    while (true) {
+                        cout << "\nHow many armies to move? ";
+                        cin >> armiesNum;
 
-                    if (cin.fail() || armiesNum > count || armiesNum <= 0) {
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        cout << "Invalid number." << endl;
-                    } else {
-                        break;
+                        if (cin.fail() || armiesNum > count || armiesNum <= 0) {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Invalid number." << endl;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    for (auto countryFrom : *(player.armiesIn)) {
+                        if (countryFrom.second > 0) {
+                            from = countryFrom.first;
+                            for (auto countryTo : *(map->countries)) {
+                                if (countryTo.first == from) {
+                                    to = (countryTo.second).front().first;
+                                    if (countryFrom.second > count) {
+                                        armiesNum = count;
+                                    }
+                                    else {
+                                        armiesNum = countryFrom.second;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 success = player.MoveOverLand(armiesNum, to, from);
@@ -325,31 +416,51 @@ bool Game::playAction(Action& action, Player& player) {
             }
                 break;
             case 2 : {
-                Country *from = nullptr;
-                while (!from) {
-                    cout << "Name country to move armies from: ";
-                    cin >> countryName;
-                    from = map->findCountry(countryName);
-                }
                 Country *to = nullptr;
-                while (!to) {
-                    cout << "Name country to move armies to: ";
-                    cin >> countryName;
-                    to = map->findCountry(countryName);
-                }
-                while (true) {
-                    cout << "\nHow many armies to move? ";
-                    cin >> armiesNum;
+                Country *from = nullptr;
+                if (player.strategy->interaction()) {
+                    while (!from) {
+                        cout << "Name country to move armies from: ";
+                        cin >> countryName;
+                        from = map->findCountry(countryName);
+                    }
+                    while (!to) {
+                        cout << "Name country to move armies to: ";
+                        cin >> countryName;
+                        to = map->findCountry(countryName);
+                    }
+                    while (true) {
+                        cout << "\nHow many armies to move? ";
+                        cin >> armiesNum;
 
-                    if (cin.fail() || armiesNum > count || armiesNum <= 0) {
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        cout << "Invalid number." << endl;
-                    } else {
-                        break;
+                        if (cin.fail() || armiesNum > count || armiesNum <= 0) {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Invalid number." << endl;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    for (auto countryFrom : *(player.armiesIn)) {
+                        if (countryFrom.second > 0) {
+                            from = countryFrom.first;
+                            for (auto countryTo : *(map->countries)) {
+                                if (countryTo.first == from) {
+                                    to = (countryTo.second).front().first;
+                                    if (countryFrom.second > count) {
+                                        armiesNum = count;
+                                    }
+                                    else {
+                                        armiesNum = countryFrom.second;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
-                success = player.MoveArmies(armiesNum, to, from);
+                success = player.MoveOverLand(armiesNum, to, from);
                 if (success) {
                     count -= armiesNum;
                 }
@@ -357,10 +468,19 @@ bool Game::playAction(Action& action, Player& player) {
                 break;
             case 3 : {
                 Country *country = nullptr;
-                while (!country) {
-                    cout << "Name country to build a city in: ";
-                    cin >> countryName;
-                    country = map->findCountry(countryName);
+                if (player.strategy->interaction()) {
+                    while (!country) {
+                        cout << "Name country to build a city in: ";
+                        cin >> countryName;
+                        country = map->findCountry(countryName);
+                    }
+                } else {
+                    for (auto countryToBuild : *(player.armiesIn)) {
+                        if (countryToBuild.second > 0) {
+                            country = countryToBuild.first;
+                            break;
+                        }
+                    }
                 }
                 success = player.BuildCity(country);
                 if (success) {
@@ -369,23 +489,38 @@ bool Game::playAction(Action& action, Player& player) {
             }
                 break;
             case 4 : {
-                while(true) {
                 Player* playerToDestroy = nullptr;
-                while(!playerToDestroy) {
-                    cout << "Name player of which you want to destroy an army: ";
-                    cin >> playerName;
-                    playerToDestroy = findPlayerByName(playerName);
-                }
                 Country *country = nullptr;
-                while (!country) {
-                    cout << "Name country to destroy an army of that player in: ";
-                    cin >> countryName;
-                    country = map->findCountry(countryName);
-                }
+
+                while(true) {
+                    if (player.strategy->interaction()) {
+                        while (!playerToDestroy) {
+                            cout << "Name player of which you want to destroy an army: ";
+                            cin >> playerName;
+                            playerToDestroy = findPlayerByName(playerName);
+                        }
+                        while (!country) {
+                            cout << "Name country to destroy an army of that player in: ";
+                            cin >> countryName;
+                            country = map->findCountry(countryName);
+                        }
+                    } else {
+                        playerToDestroy = players->front();
+                        if (playerToDestroy->name == player.name) {
+                            playerToDestroy = players->at(1);
+                        }
+                        for (auto countryToDestroy : *(playerToDestroy->armiesIn)) {
+                            if (countryToDestroy.second > 0) {
+                                country = countryToDestroy.first;
+                                break;
+                            }
+                        }
+                    }
                     if (player.DestroyArmy(country, playerToDestroy)) {
                         count -= 1;
                         break;
                     }
+
                 }
                 cout << endl;
             }
@@ -403,28 +538,40 @@ bool Game::playAction(Action& action, Player& player) {
 
 bool Game::AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player) {
 
-    cout << "What action would you like to do" << ((type==2) ? " first?" : "?") << " Select by typing the index of the actions (1 or 2).";
 
-    int index;
-    while (true) {
-        cin >> index;
+    if (player.strategy->interaction()) {
+        cout << "What action would you like to do" << ((type == 2) ? " first?" : "?")
+             << " Select by typing the index of the actions (1 or 2).";
 
-        if (cin.fail() || index > 2 || index < 1) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid number." << endl;
-        } else {
-            break;
+        int index;
+        while (true) {
+            cin >> index;
+
+            if (cin.fail() || index > 2 || index < 1) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid number." << endl;
+            } else {
+                break;
+            }
         }
-    }
-    playAction(actions[index-1], player);
-    if(type==1) {
-        return true;
-    }
-    actions.erase(actions.begin()+(index-1));
+        playAction(actions[index - 1], player);
+        if (type == 1) {
+            return true;
+        }
+        actions.erase(actions.begin() + (index - 1));
 
-    cout << "Next action: " << (actions.begin()->getName()) << endl;
-    playAction(actions[0], player);
+        cout << "Next action: " << (actions.begin()->getName()) << endl;
+        playAction(actions[0], player);
+    } else {
+        Action action = actions[0];
+        for(int c = 0; c < 2; c++) {
+            if (actions[c].type == 3 || actions[c].type == 4) {
+                action = actions[c];
+            }
+        }
+        playAction(action, player);
+    }
 
     return true;
 }
@@ -451,69 +598,31 @@ void Game::printScoreCard() {
 
 }
 
-void Game::computeScore() {
+void Game::displayScores() {
 
-    for (auto continent : *map->continents) {
-        vector<int> continentControlCount(players->size());
-        Player *continentOwner = nullptr;
+    //printScoreCard();
 
-        for (auto country : continent.second) {
-            Player *countryOwner = nullptr;
-            int highestControlCount = 0;
-
-            for (auto player : *players) {
-                int playerControlCount = player->getArmiesInCountry(country)->second + player->getCitiesInCountry(country)->second;
-
-                if (playerControlCount > highestControlCount) {
-                    highestControlCount = playerControlCount;
-                    countryOwner = player;
-                } else if (playerControlCount == highestControlCount) {
-                    countryOwner = nullptr;
-                }
-            }
-
-            if (countryOwner != nullptr) {
-                (*countryOwner->score->regionScore)++;
-
-                int playerIndex = 0;
-                for (auto player : *players) {
-                    if (countryOwner == player) {
-                        continentControlCount.at(playerIndex)++;
-                    }
-                    playerIndex++;
-                }
-            }
-
-        }
-
-        int highestContinentControlCount = 0;
-        for (int i = 0; i < continentControlCount.size(); i++) {
-            if (continentControlCount.at(i) > highestContinentControlCount) {
-                highestContinentControlCount = continentControlCount.at(i);
-                continentOwner = players->at(i);
-            } else if (continentControlCount.at(i) == highestContinentControlCount) {
-                continentOwner = nullptr;
-            }
-        }
-
-        if (continentOwner != nullptr) {
-            (*continentOwner->score->continentScore)++;
-        }
-    }
-
-    printScoreCard();
-    cout << "\n\n\nFinal Spread of goods:" << endl;
+    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
+    int playerNumber = 1;
     for (auto player : *players) {
-        cout << *(player->name) << ":" << endl;
-        player->printGoods();
+        printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
+               *player->score->continentScore,
+               *player->score->regionScore,
+               *player->score->goodScore,
+               player->score->getTotalScore()
+        );
+        playerNumber++;
     }
+}
+
+void Game::computeWinner() {
+
+    isConquered();
 
     for (auto player : *players) {
         player->computeTotalGoodScore();
         cout << endl;
     }
-
-    printScores();
 
     cout << "\n\nWinner Is:" << endl;
 
@@ -537,18 +646,84 @@ void Game::computeScore() {
     }
 }
 
-void Game::printScores() {
+void Game::isConquered() {
 
-    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
-    int playerNumber = 1;
-    for (auto player : *players) {
-        printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
-                *player->score->continentScore,
-                *player->score->regionScore,
-                *player->score->goodScore,
-                player->score->getTotalScore()
-        );
-        playerNumber++;
+    for (auto continent : *map->continents) {
+        vector<int> continentControlCount(players->size());
+        Player *continentOwner = nullptr;
+
+        for (auto country : continent.second) {
+            Player *countryOwner = nullptr;
+            int highestControlCount = 0;
+
+            for (auto player : *players) {
+                int playerControlCount = player->getArmiesInCountry(country)->second + player->getCitiesInCountry(country)->second;
+
+                if (playerControlCount > highestControlCount) {
+                    highestControlCount = playerControlCount;
+                    countryOwner = player;
+                } else if (playerControlCount == highestControlCount) {
+                    countryOwner = nullptr;
+                }
+            }
+
+            if (countryOwner != nullptr) {
+
+                //COUNTRY CONQUERED
+                conquerCountry(*countryOwner, *country);
+
+                int playerIndex = 0;
+                for (auto player : *players) {
+                    if (countryOwner == player) {
+                        continentControlCount.at(playerIndex)++;
+                    }
+                    playerIndex++;
+                }
+            }
+
+        }
+
+        int highestContinentControlCount = 0;
+        for (int i = 0; i < continentControlCount.size(); i++) {
+            if (continentControlCount.at(i) > highestContinentControlCount) {
+                highestContinentControlCount = continentControlCount.at(i);
+                continentOwner = players->at(i);
+            } else if (continentControlCount.at(i) == highestContinentControlCount) {
+                continentOwner = nullptr;
+            }
+        }
+
+        if (continentOwner != nullptr) {
+            conquerContinent(*continentOwner, *(continent.first));
+        }
     }
 
+}
+
+void Game::conquerContinent(Player& player, Continent& continent) {
+    (player.score->continentScore)++;
+    bool alreadyConquered = false;
+    for (auto continentConquered : *continentsConquered) {
+        if (continentConquered.first->name == continent.name) {
+            continentConquered.second = &player;
+            alreadyConquered = true;
+        }
+    }
+    if (!alreadyConquered) {
+        continentsConquered->push_back(make_pair(&continent, &player));
+    }
+}
+
+void Game::conquerCountry(Player& player, Country& country) {
+    (player.score->regionScore)++;
+    bool alreadyConquered = false;
+    for (auto countryConquered : *countriesConquered) {
+        if (countryConquered.first->name == country.name) {
+            countryConquered.second = &player;
+            alreadyConquered = true;
+        }
+    }
+    if (!alreadyConquered) {
+        countriesConquered->push_back(make_pair(&country, &player));
+    }
 }
