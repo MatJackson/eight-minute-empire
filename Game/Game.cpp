@@ -70,7 +70,7 @@ void ScoreView::display() {
 
     cout << "\n\n------------------------ CONQUERINGS ------------------------\n" << endl;
     for (auto continentConquered : *subject->continentsConquered) {
-        cout << *(continentConquered.second->name) << " has conquered the CONTINENT" << *(continentConquered.first->name) << endl;
+        cout << *(continentConquered.second->name) << " has conquered the CONTINENT " << *(continentConquered.first->name) << endl;
     }
     for (auto countryConquered : *subject->countriesConquered) {
         cout << *(countryConquered.second->name) << " has conquered " << *(countryConquered.first->name) << endl;
