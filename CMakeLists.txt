@@ -28,4 +28,5 @@ add_executable(
 #        Maps/MapSingletonDriver.cpp
         Game/GameObservers.cpp
         Game/GameObservers.h
+#        Game/GameStatsDriver.cpp
 )

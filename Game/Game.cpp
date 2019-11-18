@@ -27,7 +27,7 @@ void StateChange::display() {
         cout << "------------------------ " << *(subject->activePlayer->name) << "'s turn! ------------------------\n" << endl;
 
         // Select a card
-        subject->printScoreCard();
+        //subject->printScoreCard();
         subject->hand->printHand();
         cout << *subject->activePlayer->name << ": Coins = " << *subject->activePlayer->tokens << endl;
         subject->activePlayer->printGoods();
@@ -35,7 +35,7 @@ void StateChange::display() {
 
     if (subject->state == "select card") {
         cout << endl;
-        cout << "You have selectedCard:" << endl;
+        cout << "You have selected Card:" << endl;
         subject->selectedCard->printCard();
     }
 
@@ -44,29 +44,46 @@ void StateChange::display() {
     }
 };
 
-ScoreChange::ScoreChange() {
+ScoreView::ScoreView() {
 
 };
 
-ScoreChange::ScoreChange(Game* s) {
+ScoreView::ScoreView(Game* s) {
     subject = s;
     subject->Attach(this);
 };
 
-void ScoreChange::Update() {
+void ScoreView::Update() {
     display();
 };
-void ScoreChange::display() {
-    if (subject->state == "display score") {
-        subject->printScores();
+void ScoreView::display() {
+
+    cout << "\n\n------------------------ PLAYERS ------------------------\n" << endl;
+    for (auto player : *subject->players) {
+        player->display();
+        player->printGoods();
+        if(player->hand->size() == *(subject->maxCardCount)) {
+            cout << "\nCONGRATS!!! YOU HAVE THE MAX CARD COUNT!!!!\n";
+        }
     }
+    cout << "----------------------------------------------------------\n" << endl;
+
+    cout << "\n\n------------------------ CONQUERINGS ------------------------\n" << endl;
+    for (auto continentConquered : *subject->continentsConquered) {
+        cout << *(continentConquered.second->name) << " has conquered the CONTINENT" << *(continentConquered.first->name) << endl;
+    }
+    for (auto countryConquered : *subject->countriesConquered) {
+        cout << *(countryConquered.second->name) << " has conquered " << *(countryConquered.first->name) << endl;
+    }
+    cout << "--------------------------------------------------------\n" << endl;
 };
 
 // GAME
 
-Game::Game()
-{
-
+Game::Game() {
+    players = new vector<Player*>;
+    countriesConquered = new vector<pair<Country*, Player*>>;
+    continentsConquered = new vector<pair<Continent*, Player*>>;
 }
 
 void Game::changeState(string change) {
@@ -86,9 +103,6 @@ int Game::initialize()
     //initialize deck
     deck = new Deck();
     deck->generateDeck();
-
-    //initialize players
-    players = new vector<Player*>;
 
     while (true) {
         cout << "How many players would like to play? ";
@@ -258,7 +272,7 @@ void Game::takeTurn(Player *player) {
     playCard(*selectedCard, *player);
     cout << endl; // breakpoint line.
 
-    changeState("display score");
+    changeState("post turn");
 }
 
 void Game::mainGameLoop() {
@@ -278,6 +292,7 @@ void Game::mainGameLoop() {
     while (!gameOver) {
         activePlayer = players->at(indexOfActivePlayer);
         takeTurn(activePlayer);
+        isConquered();
 
         indexOfActivePlayer = (indexOfActivePlayer + 1) % playerCount;
         gameOver = players->at(indexOfActivePlayer)->hand->size() == *maxCardCount;
@@ -583,9 +598,31 @@ void Game::printScoreCard() {
 
 }
 
-void Game::computeScore() {
+void Game::displayScores() {
 
-    printScores();
+    //printScoreCard();
+
+    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
+    int playerNumber = 1;
+    for (auto player : *players) {
+        printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
+               *player->score->continentScore,
+               *player->score->regionScore,
+               *player->score->goodScore,
+               player->score->getTotalScore()
+        );
+        playerNumber++;
+    }
+}
+
+void Game::computeWinner() {
+
+    isConquered();
+
+    for (auto player : *players) {
+        player->computeTotalGoodScore();
+        cout << endl;
+    }
 
     cout << "\n\nWinner Is:" << endl;
 
@@ -609,7 +646,7 @@ void Game::computeScore() {
     }
 }
 
-void Game::printScores() {
+void Game::isConquered() {
 
     for (auto continent : *map->continents) {
         vector<int> continentControlCount(players->size());
@@ -631,7 +668,9 @@ void Game::printScores() {
             }
 
             if (countryOwner != nullptr) {
-                (*countryOwner->score->regionScore)++;
+
+                //COUNTRY CONQUERED
+                conquerCountry(*countryOwner, *country);
 
                 int playerIndex = 0;
                 for (auto player : *players) {
@@ -655,27 +694,36 @@ void Game::printScores() {
         }
 
         if (continentOwner != nullptr) {
-            (*continentOwner->score->continentScore)++;
+            conquerContinent(*continentOwner, *(continent.first));
         }
     }
 
-    printScoreCard();
+}
 
-    for (auto player : *players) {
-        player->computeTotalGoodScore();
-        cout << endl;
+void Game::conquerContinent(Player& player, Continent& continent) {
+    (player.score->continentScore)++;
+    bool alreadyConquered = false;
+    for (auto continentConquered : *continentsConquered) {
+        if (continentConquered.first->name == continent.name) {
+            continentConquered.second = &player;
+            alreadyConquered = true;
+        }
     }
-
-    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
-    int playerNumber = 1;
-    for (auto player : *players) {
-        printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
-                *player->score->continentScore,
-                *player->score->regionScore,
-                *player->score->goodScore,
-                player->score->getTotalScore()
-        );
-        playerNumber++;
+    if (!alreadyConquered) {
+        continentsConquered->push_back(make_pair(&continent, &player));
     }
+}
 
+void Game::conquerCountry(Player& player, Country& country) {
+    (player.score->regionScore)++;
+    bool alreadyConquered = false;
+    for (auto countryConquered : *countriesConquered) {
+        if (countryConquered.first->name == country.name) {
+            countryConquered.second = &player;
+            alreadyConquered = true;
+        }
+    }
+    if (!alreadyConquered) {
+        countriesConquered->push_back(make_pair(&country, &player));
+    }
 }

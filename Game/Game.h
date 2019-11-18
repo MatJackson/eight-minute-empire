@@ -20,6 +20,8 @@ public:
     Player* non_player; //optional - only if 2 players in the game
     Player* activePlayer;
     Card *selectedCard;
+    vector<pair<Continent*, Player*>> *continentsConquered;
+    vector<pair<Country*, Player*>> *countriesConquered;
     Hand* hand;
     int *maxCardCount;
     string state;
@@ -35,8 +37,11 @@ public:
     bool AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player);
     Player* findPlayerByName(string playerName);
     void printScoreCard();
-    void computeScore();
-    void printScores();
+    void displayScores();
+    void computeWinner();
+    void isConquered();
+    void conquerContinent(Player& player, Continent& continent);
+    void conquerCountry(Player& player, Country& country);
 };
 
 class StateChange : public Observer { //concrete observer
@@ -49,10 +54,10 @@ private:
     Game *subject;
 };
 
-class ScoreChange : public Observer { //concrete observer
+class ScoreView : public Observer { //concrete observer
 public:
-    ScoreChange();
-    ScoreChange(Game* s);
+    ScoreView();
+    ScoreView(Game* s);
     void Update();
     void display();
 private:
