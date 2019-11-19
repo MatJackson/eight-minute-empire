@@ -2,8 +2,8 @@
 // Created by Tamar M on 2019-10-29.
 //
 
-#ifndef EIGHT_MINUTE_EMPIRE_GAME_H
-#define EIGHT_MINUTE_EMPIRE_GAME_H
+#ifndef EIGHT_MINUTE_EMPIRE_GAMEENGINE_H
+#define EIGHT_MINUTE_EMPIRE_GAMEENGINE_H
 
 #include "../Maps/Map.h"
 #include "../Maps/MapLoader.h"
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class Game : public Subject { //concrete subject
+class GameEngine : public Subject { //concrete subject
 public:
     vector<Player*> *players;
     Map* map;
@@ -26,7 +26,7 @@ public:
     int *maxCardCount;
     string state;
 
-    Game();
+    GameEngine();
     void changeState(string stateChange);
     int initialize();
     int startup();
@@ -47,22 +47,22 @@ public:
 class StateChange : public Observer { //concrete observer
 public:
     StateChange();
-    StateChange(Game* s);
+    StateChange(GameEngine* s);
     void Update();
     void display();
 private:
-    Game *subject;
+    GameEngine *subject;
 };
 
 class ScoreView : public Observer { //concrete observer
 public:
     ScoreView();
-    ScoreView(Game* s);
+    ScoreView(GameEngine* s);
     void Update();
     void display();
 private:
-    Game *subject;
+    GameEngine *subject;
 };
 
 
-#endif //EIGHT_MINUTE_EMPIRE_GAME_H
+#endif //EIGHT_MINUTE_EMPIRE_GAMEENGINE_H

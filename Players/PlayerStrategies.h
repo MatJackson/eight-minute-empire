@@ -11,6 +11,7 @@ class PlayerStrategy {
 public:
     virtual int pickCard(Hand* hand) = 0;
     virtual bool interaction();
+    virtual int submitAge();
 };
 
 
@@ -18,6 +19,7 @@ class HumanStrategy : public PlayerStrategy {
 public:
     int pickCard(Hand* hand);
     virtual bool interaction();
+    int submitAge();
 };
 
 class GreedyComputerStrategy : public PlayerStrategy {
@@ -25,6 +27,7 @@ class GreedyComputerStrategy : public PlayerStrategy {
 public:
     int pickCard(Hand* hand);
     virtual bool interaction();
+    int submitAge();
 };
 
 class ModerateComputerStrategy : public PlayerStrategy {
@@ -32,6 +35,7 @@ class ModerateComputerStrategy : public PlayerStrategy {
 public:
     int pickCard(Hand* hand);
     virtual bool interaction();
+    int submitAge();
 };
 
 

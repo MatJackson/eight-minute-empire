@@ -2,7 +2,7 @@
 // Created by Tamar M on 2019-10-29.
 //
 
-#include "Game.h"
+#include "GameEngine.h"
 #include <iostream>
 #include <string>
 #include <limits>
@@ -13,7 +13,7 @@ StateChange::StateChange() {
 
 };
 
-StateChange::StateChange(Game* s) {
+StateChange::StateChange(GameEngine* s) {
     subject = s;
     subject->Attach(this);
 };
@@ -48,7 +48,7 @@ ScoreView::ScoreView() {
 
 };
 
-ScoreView::ScoreView(Game* s) {
+ScoreView::ScoreView(GameEngine* s) {
     subject = s;
     subject->Attach(this);
 };
@@ -80,18 +80,18 @@ void ScoreView::display() {
 
 // GAME
 
-Game::Game() {
+GameEngine::GameEngine() {
     players = new vector<Player*>;
     countriesConquered = new vector<pair<Country*, Player*>>;
     continentsConquered = new vector<pair<Continent*, Player*>>;
 }
 
-void Game::changeState(string change) {
+void GameEngine::changeState(string change) {
     state = change;
     Notify();
 }
 
-int Game::initialize()
+int GameEngine::initialize()
 {
     //initialize map
     MapLoader* mapLoader = new MapLoader();
@@ -108,80 +108,63 @@ int Game::initialize()
         cout << "How many players would like to play? ";
         cin >> playerNum;
 
-        if (cin.fail() || playerNum < 2 || playerNum > 5) {
+        if (cin.fail() || playerNum < 2 || playerNum > 4) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid player number. There can only be 2 to 5 players in the game. " << endl;
-        } else {
+            cout << "Invalid player number. There can only be 2 to 4 players in the game. " << endl;
+        } else { break; }
+    }
 
-            for(int i = 1; i <= playerNum; i++) {
-                Player* player = new Player(map, "Player" + to_string(i), 3, 0, 14);
-                players->push_back(player);
-                cout << "Created player " + *(player->name);
-                int age;
-                while (true) {
-                    cout << ". How old are you? ";
-                    cin >> age;
+    int mode;
 
-                    if (cin.fail() || age < 1) {
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        cout << "Invalid age. " << endl;
-                    } else {
-                        (*(player->age))=age;
-                        break;
-                    }
-                }
-            }
-            cout << endl;
-            break;
+    for(int i = 1; i <= playerNum; i++) {
+
+        mode = 0;
+
+        while (true) {
+            cout << "\nChoose mode for Player" << playerNum << ": (0 for human players, 1 for greedy computer player or 2 for moderate computer player): ";
+            cin >> mode;
+
+            if (cin.fail() || mode < 0 || mode > 2) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid number. " << endl;
+            } else {
+                break; }
         }
-    }
 
-    if(players->size()==2) {
-        non_player = new Player(map, "Player3", 3, 0, 4);
+        Player* player = new Player(map, "Player" + to_string(i), 3, 0, 14);
+        if(mode==1){
+            player->setStrategy(new GreedyComputerStrategy);
+        }
+        if(mode==2){
+            player->setStrategy(new ModerateComputerStrategy);
+        }
+        players->push_back(player);
+        cout << "Created player " + *(player->name);
+        *(player->age) = player->strategy->submitAge();
     }
-    else {
-        non_player= nullptr;
-    }
+    cout << endl;
+
+    non_player= nullptr;
 
     return 0;
 
 }
 
-int Game::startup()
+int GameEngine::startup()
 {
     //shuffle deck
     deck->shuffle();
 
     //generate open cards and display
     hand = new Hand(deck);
-    cout << "6 first open cards!" << endl;
-    hand->printHand();
 
     //place armies at starting point
     cout << "\nPlace 3 armies on the starting region of the board! (" << *(map->startingRegion->name) << ")" << endl;
     for (auto player : *players) {
-        player->PlaceNewArmies(3, map->startingRegion, false);
+        player->PlaceNewArmies(3, map->startingRegion, true);
 }
-
-    //If 2 players, place armies of 3rd non-player
-    if(players->size()==2) {
-        cout << "\nSince there are only 2 players, each player "
-                "takes turns placing one army at a time of a third, non-player in any region on the "
-                "board until ten armies have been placed!" << endl;
-        for (int c = 0; c < 10 ; c++) {
-            int turn = c%2;
-            string countryName;
-            Country *country = nullptr;
-            while (!country) {
-                cout << "Your turn, " << *((*players)[turn]->name) << ". Which country would you like to add one army for Player3? ";
-                cin >> countryName;
-                country = map->findCountry(countryName);
-            }
-            non_player->PlaceNewArmies(1, country, true);
-        }
-    }
 
     // Player claims coin tokens and maxCardCount determined.
     int coinsPerPlayer = 0;
@@ -220,23 +203,34 @@ int Game::startup()
             "the bid. If the bids are tied for most, the youngest player wins the bid and pays his coins.\nIf all"
             "bids are zero, the youngest player wins the bid.\n\n";
 
+    bool bid = false;
     for (auto player : *players) {
-        *(player->bidding->playerAge)=*(player->age);
-        *(player->bidding->availableCoin)=*(player->tokens);
-        cout << *(player->name) << ": " << endl;
-        player->bidding->bid();
-    }
-
-    // get winner
-    Player* winner;
-    BiddingFacility *winningBidder = nullptr;
-    for (auto player : *players) {
-        if (player->bidding->largerBidThan(winningBidder)) {
-            winner = player;
-            winningBidder = player->bidding;
+        if(player->strategy->interaction()) {
+            bid = true;
         }
     }
-    winningBidder->payBid();
+
+    Player* winner = *(players->begin());
+
+    if (bid) {
+        for (auto player : *players) {
+            *(player->bidding->playerAge)=*(player->age);
+            *(player->bidding->availableCoin)=*(player->tokens);
+            cout << *(player->name) << ": " << endl;
+            player->bidding->bid();
+        }
+        // get winner
+        BiddingFacility *winningBidder = nullptr;
+        for (auto player : *players) {
+            if (player->bidding->largerBidThan(winningBidder)) {
+                winner = player;
+                winningBidder = player->bidding;
+            }
+        }
+        winningBidder->payBid();
+    }
+
+
     activePlayer = winner;
     cout << "Winner is: " << *(winner->name) << endl;
     cout << "State After Paying Bid:" << endl;
@@ -250,7 +244,7 @@ int Game::startup()
 
 }
 
-void Game::takeTurn(Player *player) {
+void GameEngine::takeTurn(Player *player) {
     selectedCard = nullptr;
     int indexOfCardToExchange;
 
@@ -275,7 +269,7 @@ void Game::takeTurn(Player *player) {
     changeState("post turn");
 }
 
-void Game::mainGameLoop() {
+void GameEngine::mainGameLoop() {
     int playerCount = players->size();
     int indexOfActivePlayer = 0;
     bool gameOver = false;
@@ -299,7 +293,7 @@ void Game::mainGameLoop() {
     }
 }
 
-bool Game::playCard(Card& card, Player& player) {
+bool GameEngine::playCard(Card& card, Player& player) {
 
     cout << "\nNEW CARD SELECTED! " << endl;
     card.printCard();
@@ -314,7 +308,7 @@ bool Game::playCard(Card& card, Player& player) {
     return true;
 }
 
-bool Game::playAction(Action& action, Player& player) {
+bool GameEngine::playAction(Action& action, Player& player) {
 
     int count = action.count;
     string countryName;
@@ -527,16 +521,16 @@ bool Game::playAction(Action& action, Player& player) {
                 break;
         }
 
-        if (count>0) {
+        if (count>0 && player.strategy->interaction()) {
             cout << endl << "You still have " << count << " left... ";
         }
 
-    } while(count>0);
+    } while(count>0 && player.strategy->interaction());
 
     return true;
 }
 
-bool Game::AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player) {
+bool GameEngine::AndOrAction(Card::CombinationType type, vector<Action> actions, Player& player) {
 
 
     if (player.strategy->interaction()) {
@@ -576,7 +570,7 @@ bool Game::AndOrAction(Card::CombinationType type, vector<Action> actions, Playe
     return true;
 }
 
-Player* Game::findPlayerByName(string playerName) {
+Player* GameEngine::findPlayerByName(string playerName) {
     vector<Player*>::iterator p;
     for (p = (players)->begin(); p !=(players)->end(); ++p) {
         if (*((*p)->name) == playerName) {
@@ -587,7 +581,7 @@ Player* Game::findPlayerByName(string playerName) {
     return nullptr;
 }
 
-void Game::printScoreCard() {
+void GameEngine::printScoreCard() {
     cout << "Good Score Card: required good count to achieve given scores" << endl;
     printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Good Type", "Score: 1", "Score: 2", "Score: 3", "Score: 6");
     printf("\t|%-15s|%10d|%10d|%10d|%10d|\n", "Ruby", 1, 2, 3, 4);
@@ -598,24 +592,24 @@ void Game::printScoreCard() {
 
 }
 
-void Game::displayScores() {
+void GameEngine::displayScores() {
 
     //printScoreCard();
 
-    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Continent", "Region", "Goods", "Total");
+    printf("\t|%-15s|%-10s|%-10s|%-10s|%-10s|\n", "Player", "Coins", "Cards", "Goods", "Victory");
     int playerNumber = 1;
     for (auto player : *players) {
         printf("\t|%-6s%-9d|%10d|%10d|%10d|%10d|\n", "player", playerNumber,
-               *player->score->continentScore,
-               *player->score->regionScore,
+               *player->tokens,
+               player->hand->size(),
                *player->score->goodScore,
-               player->score->getTotalScore()
+               player->getTotalScore()
         );
         playerNumber++;
     }
 }
 
-void Game::computeWinner() {
+void GameEngine::computeWinner() {
 
     isConquered();
 
@@ -624,29 +618,30 @@ void Game::computeWinner() {
         cout << endl;
     }
 
-    cout << "\n\nWinner Is:" << endl;
-
     int highestScore = 0;
 
     for (auto player : *players) {
-        if (player->score->getTotalScore() > highestScore) {
-            highestScore = player->score->getTotalScore();
+        if (player->getTotalScore() > highestScore) {
+            highestScore = player->getTotalScore();
         }
     }
 
+    displayScores();
+
     vector<Player> winners;
     for (auto player : *players) {
-        if (player->score->getTotalScore() == highestScore) {
+        if (player->getTotalScore() == highestScore) {
             winners.push_back(*player);
         }
     }
 
+    cout << "\n\nWinner Is:" << endl;
     for (auto winner : winners) {
         cout << *(winner.name) << endl;
     }
 }
 
-void Game::isConquered() {
+void GameEngine::isConquered() {
 
     for (auto continent : *map->continents) {
         vector<int> continentControlCount(players->size());
@@ -700,8 +695,8 @@ void Game::isConquered() {
 
 }
 
-void Game::conquerContinent(Player& player, Continent& continent) {
-    (player.score->continentScore)++;
+void GameEngine::conquerContinent(Player& player, Continent& continent) {
+    *(player.score->continentScore)+=1;
     bool alreadyConquered = false;
     for (auto continentConquered : *continentsConquered) {
         if (continentConquered.first->name == continent.name) {
@@ -714,8 +709,8 @@ void Game::conquerContinent(Player& player, Continent& continent) {
     }
 }
 
-void Game::conquerCountry(Player& player, Country& country) {
-    (player.score->regionScore)++;
+void GameEngine::conquerCountry(Player& player, Country& country) {
+    *(player.score->regionScore)+=1;
     bool alreadyConquered = false;
     for (auto countryConquered : *countriesConquered) {
         if (countryConquered.first->name == country.name) {

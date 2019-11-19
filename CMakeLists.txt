@@ -19,8 +19,8 @@ add_executable(
         Bidding/BiddingFacility.h
         Bidding/BiddingFacility.cpp
 #        Bidding/BiddingFacilityDriver.cpp
-        Game/Game.cpp
-        Game/Game.h
+        Game/GameEngine.cpp
+        Game/GameEngine.h
         Game/GameDriver.cpp
         Players/PlayerStrategies.cpp
         Players/PlayerStrategies.h

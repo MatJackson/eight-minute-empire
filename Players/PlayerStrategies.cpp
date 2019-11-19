@@ -46,8 +46,37 @@ int ModerateComputerStrategy::pickCard(Hand *hand) {
     return 0;
 }
 
+int HumanStrategy::submitAge() {
+    int age;
+    while (true) {
+        cout << ". How old are you? ";
+        cin >> age;
+
+        if (cin.fail() || age < 1) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid age. " << endl;
+        } else {
+            return age;
+            break;
+        }
+    }
+}
+
+int GreedyComputerStrategy::submitAge() {
+    return rand() % 100;
+}
+
+int ModerateComputerStrategy::submitAge() {
+    return rand() % 100;
+}
+
 bool PlayerStrategy::interaction() {
     return true;
+}
+
+int PlayerStrategy::submitAge() {
+    return 0;
 }
 
 bool HumanStrategy::interaction() {

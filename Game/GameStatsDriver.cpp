@@ -2,7 +2,7 @@
 // Created by Tamar M on 2019-11-17.
 //
 
-#include "Game.h"
+#include "GameEngine.h"
 #include <iostream>
 
 using namespace std;
