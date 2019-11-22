@@ -4,6 +4,7 @@
 
 #include "PlayerStrategies.h"
 #include <iostream>
+#include <limits>
 
 int HumanStrategy::pickCard(Hand *hand) {
     int indexOfCardToExchange;
