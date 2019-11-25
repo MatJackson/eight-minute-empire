@@ -46,6 +46,10 @@ void Player::setStrategy(PlayerStrategy* playerStrategy) {
     strategy = playerStrategy;
 }
 
+int Player::submitAge() {
+    return (strategy->submitAge());
+}
+
 int Player::pickCard(Hand *hand) {
     return (strategy->pickCard(hand));
 }
@@ -62,8 +66,8 @@ bool Player::PayCoin(int coins) {
     }
 }
 
-int Score::getTotalScore() {
-    return *continentScore + *regionScore + *goodScore;
+int Player::getTotalScore() {
+    return *score->continentScore + *score->regionScore + *score->goodScore;
 }
 
 bool Player::PlaceNewArmies(int armiesNum, Country *country, bool forceAdd) {

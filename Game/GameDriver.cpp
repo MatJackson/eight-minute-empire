@@ -2,16 +2,16 @@
 // Created by Tamar M on 2019-10-29.
 //
 
-#include "Game.h"
+#include "GameEngine.h"
 #include <iostream>
 
 using namespace std;
 
 int main() {
 
-    Game* game = new Game( );
+    GameEngine* game = new GameEngine( );
 
-    ScoreView scoreview = ScoreView(game);
+    //ScoreView scoreview = ScoreView(game);
     StateChange stateChange = StateChange(game);
 
     game->initialize();

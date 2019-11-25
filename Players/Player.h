@@ -16,8 +16,6 @@ struct Score {
     int *continentScore;
     int *regionScore;
     int *goodScore;
-
-    int getTotalScore();
 };
 
 class Player {
@@ -32,6 +30,7 @@ public:
     int *armies;
     int *age;
     Score *score;
+    int getTotalScore();
     BiddingFacility *bidding;
     vector<Card*> *hand;
     vector<countryValue> *citiesIn;
@@ -40,6 +39,7 @@ public:
     Player(Map *map, string name, int diskNum, int tokenNum, int armyNum);
     void setStrategy(PlayerStrategy* strategy);
     int pickCard(Hand* hand);
+    int submitAge();
     bool PayCoin(int coins);
     bool PlaceNewArmies(int armiesNum, Country *country, bool forceAdd);
     bool MoveArmies(int armiesNum, Country *to, Country *from);

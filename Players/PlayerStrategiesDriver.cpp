@@ -2,7 +2,7 @@
 // Created by Tamar M on 2019-11-09.
 //
 #include "PlayerStrategies.h"
-#include "../Game/Game.h"
+#include "../Game/GameEngine.h"
 using namespace std;
 
 int main() {
